@@ -253,6 +253,20 @@ and evaluate term database rep clauses sc fc cut_c =
     | TermCut -> sc (true,rep) cut_c
     | _ -> raise Cant_evaluate
 
+let quiet = true
+
+let thunk = fun () -> ()
+
+let print_no = fun () -> 
+	if quiet
+	then ()
+	else print_string "No\n"
+
+let print_yes = fun () ->
+	if quiet
+	then ()
+	else print_string "Yes\n"
+
 (* evaluates all possible ways a term given a specific database *)
 let interpret term database interactive =
   (* asks if evaluation should be continued *)
@@ -267,10 +281,17 @@ let interpret term database interactive =
     let variables = (get_variables term []) in
     List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement
   in
-    evaluate term database [] database
-      (fun vt fc -> if fst vt then
-	 (print_string "Yes\n"; print_replacement (filter (snd vt)); print_endline "";
-	  if more() then fc() else ())
-       else
-	 fc())
-      (fun () -> print_string "No\n") (fun () -> ())
+      evaluate term database [] database
+		  (fun vt fc -> 
+			  if fst vt 
+			  then (print_yes ();
+					print_replacement (filter (snd vt)); 
+					print_endline "";
+					if more () 
+					then fc () 
+					else ()
+			  )
+			  else fc ()
+		  )
+		  print_no thunk
+		  
