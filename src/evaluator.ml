@@ -254,12 +254,15 @@ and evaluate term database rep clauses sc fc cut_c =
     | _ -> raise Cant_evaluate
 
 (* evaluates all possible ways a term given a specific database *)
-let interpret term database =
+let interpret term database interactive =
   (* asks if evaluation should be continued *)
-  let more() =
-    print_string "More?\n";
-    if read_line() = ";" then true
-    else false
+  let more () =
+	if interactive
+	then (print_string "More?\n";
+		  if read_line() = ";" then true
+		  else false)
+	else
+		true
   and filter replacement = (* filters replacement that only variables that exist in term remains *)
     let variables = (get_variables term []) in
     List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement

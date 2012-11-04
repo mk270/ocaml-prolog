@@ -77,7 +77,7 @@ let main () =
                 try
 					let db = shuffle database in
 						buff := Lexing.from_string(read_line());	(* read the expression *)
-						interpret (Parser.query Lexer.token !buff) db;    (* create it's syntax tree*)		    
+						interpret (Parser.query Lexer.token !buff) db false;    (* create it's syntax tree*)		    
                 with
                     | Failure ("lexing: empty token")           (* lexing failure *)
                     | Parsing.Parse_error ->                    (* parsing failure *)

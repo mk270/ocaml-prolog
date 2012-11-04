@@ -1,3 +1,3 @@
 open Types;;
 
-val interpret : term -> clause list -> unit
+val interpret : term -> clause list -> bool -> unit
