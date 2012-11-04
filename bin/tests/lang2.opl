@@ -1,0 +1,15 @@
+sentence(S1,S3) :- noun_phrase(S1,S2,Num), verb_phrase(S2,S3,Num).
+noun_phrase(S1,S3,Num) :- det(S1,S2, Num), noun(S2,S3,Num).
+verb_phrase(S1,S3,Num) :- verb(S1,S2,Num), noun_phrase(S2,S3,_).
+det([the|X], X, _).
+det([a|X], X, number(singular)).
+noun([cat|X], X, number(singular)).
+noun([bat|X], X, number(singular)).
+verb([eats|X], X, number(singular)).
+
+
+noun([horses|X], X, number(plural)).
+verb([trample|X], X, number(plural)).
+
+number(singular).
+number(plural).
