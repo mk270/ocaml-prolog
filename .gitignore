@@ -1,0 +1,10 @@
+src/*.cmo
+src/*.cmi
+src/*.annot
+src/lexer.ml
+src/parser.ml
+src/parser.mli
+src/._bcdi
+src/._d
+*~
+bin/opl
