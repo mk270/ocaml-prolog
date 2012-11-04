@@ -1,0 +1,9 @@
+append(L,[],L).
+append([],L,L).
+append(L1,L2,L3) :- L1=[H|T1], L3=[H|T3], append(T1,L2,T3).
+
+%przyk³adowe testy:
+
+%append([1,2],[3,4],[1,2,3,4]).
+%append([1,2],[3,4],X).
+%append(X,Y,[1,2,3,4]).

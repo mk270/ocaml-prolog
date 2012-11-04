@@ -1,0 +1,13 @@
+root(2).
+child(2,3).
+child(2,5).
+child(3,6).
+child(3,12).
+
+in_tree(X) :- root(X); child(Y,X), in_tree(Y).
+
+%przyk³adowe testy
+
+%in_tree(6).
+%in_tree(X).
+%child(X,Y).

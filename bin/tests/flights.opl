@@ -1,0 +1,16 @@
+rejsy(    sf,   den,   930,    1230).
+rejsy(    sf,   dal,   900,    1430).
+rejsy(   den,   chi,  1500,    1800).
+rejsy(   den,   dal,  1400,    1700).
+rejsy(   dal,   chi,  1530,    1730).
+rejsy(   chi,    ny,  1500,    1930).
+rejsy(   chi,    ny,  1900,    2200).
+rejsy(   chi,    ny,  1830,    2130).
+
+polaczenie(X, Y, O, P) :-
+	rejsy(X, Y, O, P).
+
+polaczenie(X, Y, O, P) :-
+	rejsy(X, Z, O, T1),
+	polaczenie(Z, Y, T2, P),
+	T2 >= T1 + 100.
