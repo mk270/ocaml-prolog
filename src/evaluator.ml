@@ -123,27 +123,30 @@ rep is a replacement
 clauses is a list of clauses from database that haven't beed checked yet
 cont is a continuation *)
 let rec functor_eval functor_term database rep clauses sc fc cut_c =
-  let term = replace functor_term rep in (* replace variables in term *)
-    match clauses with
-	[] -> sc (false,[]) fc (* no more facts or implications in database *)
-      | dclause::clauses' -> 
-	  let clause = make_unique dclause in
-	  (match clause with
-	       SingleClause dterm -> let uni = (unify term dterm rep)   (* found a fact in database *)
-	       in
-		 if fst uni then
-		   sc uni
-		     (fun() -> functor_eval term database rep clauses' sc fc cut_c) (* term unifies with fact in database, so store rest of possible calculations and return result of unification *)
-		 else
-		   functor_eval term database rep clauses' sc fc cut_c (* term doesn't unify with fact, so try another possibilities *)
-	     | ClauseImplication(dterm,condition) -> 		 
-		 let uni = (unify term dterm rep) (* found an implication in database, try to unificate with it's resault (left side term) *)
-	       in		 
-		 if fst uni then		   
-		   evaluate condition database (snd uni) database 
-		     (fun vt fc' -> sc vt fc') (fun () -> functor_eval term database rep clauses' sc fc cut_c) fc
-		 else functor_eval term database rep clauses' sc fc cut_c)
-	    
+	let term = replace functor_term rep in (* replace variables in term *)
+		match clauses with
+			| [] -> sc (false,[]) fc (* no more facts or implications in database *)
+			| dclause::clauses' -> 
+				let clause = make_unique dclause in
+					(match clause with
+						| SingleClause dterm -> 
+							let uni = (unify term dterm rep)   (* found a fact in database *)
+							in
+								if fst uni 
+								then sc uni (fun() -> functor_eval term database rep clauses' sc fc cut_c) (* term 
+								   unifies with fact in database, so store rest of possible calculations 
+								   and return result of unification *)
+								else functor_eval term database rep clauses' sc fc cut_c (* term doesn't unify 
+																	with fact, so try another possibilities *)
+						| ClauseImplication (dterm, condition) ->
+							let uni = (unify term dterm rep) (* found an implication in database, 
+																try to unificate with it's resault (left side term) *)
+							in		 
+								if fst uni 
+								then evaluate condition database (snd uni) database 
+									(fun vt fc' -> sc vt fc') (fun () -> functor_eval term database rep clauses' sc fc cut_c) fc
+								else functor_eval term database rep clauses' sc fc cut_c)
+						
 (* evaluates terms *)
 and evaluate term database rep clauses sc fc cut_c =
 	let repterm = replace term rep             (* apply replacement to the term *)
@@ -212,7 +215,8 @@ and evaluate term database rep clauses sc fc cut_c =
 					(fun vt1 fc1 ->
 						if fst vt1 then
 							evaluate t2 database (snd vt1) clauses
-								(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation then the other one will be tried to be evaluated *)
+								(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation 
+																		 then the other one will be tried to be evaluated *)
 						else sc (false,[]) fc1) fc cut_c
 			| TermOr(t1,t2) -> evaluate t1 database rep clauses
 				(fun vt fc' -> sc vt fc')
