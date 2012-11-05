@@ -65,69 +65,55 @@ let make_unique = function
 
 (* evaluates arithmetic expression *)
 let rec arithmetic_eval term = 
-  match term with
-      TermConstant const -> (match const with
-				 ConstantNumber n -> n
-			       | _ -> raise Not_a_number)
-    | TermArithmeticPlus(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> (match n2 with
-			     Float fl2 -> Float (fl1 +. fl2)
-			    | Integer i2 -> Float (fl1 +. (float_of_int i2)))
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> Float ((float_of_int i1) +. fl2)
-			     | Integer i2 -> Integer (i1 + i2)))
-    | TermArithmeticMinus(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> (match n2 with
-			     Float fl2 -> Float (fl1 -. fl2)
-			    | Integer i2 -> Float (fl1 -. (float_of_int i2)))
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> Float ((float_of_int i1) -. fl2)
-			     | Integer i2 -> Integer (i1 - i2)))
-    | TermArithmeticMult(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> (match n2 with
-			     Float fl2 -> Float (fl1 *. fl2)
-			    | Integer i2 -> Float (fl1 *. (float_of_int i2)))
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> Float ((float_of_int i1) *. fl2)
-			     | Integer i2 -> Integer (i1 * i2)))
-    | TermArithmeticDiv(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> (match n2 with
-			     Float fl2 -> Float (fl1 /. fl2)
-			    | Integer i2 -> Float (fl1 /. (float_of_int i2)))
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> Float ((float_of_int i1) /. fl2)
-			     | Integer i2 -> Integer (i1 / i2)))
-    | TermArithmeticIntDiv(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> raise Not_integer
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> raise Not_integer
-			     | Integer i2 -> Integer (i1 / i2)))
-    | TermArithmeticModulo(t1,t2) -> let n1 = (arithmetic_eval t1) 
-				   and n2 = (arithmetic_eval t2)
-      in
-	(match n1 with
-	    Float fl1 -> raise Not_integer
-	  | Integer i1 -> (match n2 with
-			       Float fl2 -> raise Not_integer
-			     | Integer i2 -> Integer (i1 mod i2)))
-    | _ -> raise Not_a_number
-      
-
+	match term with
+		| TermConstant const -> (match const with
+				| ConstantNumber n -> n
+			    | _ -> raise Not_a_number)
+		| TermArithmeticPlus(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 + i2)))
+		| TermArithmeticMinus(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 - i2)))
+		| TermArithmeticMult(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 * i2)))
+		| TermArithmeticDiv(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 / i2)))
+		| TermArithmeticIntDiv(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 / i2)))
+		| TermArithmeticModulo(t1,t2) -> 
+			let n1 = (arithmetic_eval t1) 
+			and n2 = (arithmetic_eval t2)
+			in
+				(match n1 with
+					| Integer i1 -> (match n2 with
+							| Integer i2 -> Integer (i1 mod i2)))
+		| _ -> raise Not_a_number
+			
+			
 
 
 (* evaluates functor 
@@ -160,92 +146,79 @@ let rec functor_eval functor_term database rep clauses sc fc cut_c =
 	    
 (* evaluates terms *)
 and evaluate term database rep clauses sc fc cut_c =
-  let repterm = replace term rep             (* apply replacement to the term *)
-  in
-  match repterm with
-      TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
-    | TermTermNotUnify(term1,term2) -> 
-	let uni = unify term1 term2 rep in
-	  sc (not (fst uni), snd uni) fc
-    | TermArithmeticEquality(t1,t2) ->
-	let n1 = arithmetic_eval t1 (* find value of left  term *)
-	and n2 = arithmetic_eval t2 (* find value of right term *)
-      in
-	if n1 = n2 then sc (true,rep) fc
-      else sc (false,[]) fc
-    | TermArithmeticInequality(t1,t2) -> let n1 = arithmetic_eval t1
-				       and n2 = arithmetic_eval t2
-      in
-	if n1 = n2 then sc (false,[]) fc
-      else sc (true,rep) fc
-    | TermArithmeticLess(t1,t2) -> let n1 = arithmetic_eval t1
-				   and n2 = arithmetic_eval t2
-      in
-	(match n1 with
-	    Float x1 ->
-	      (match n2 with
-		   Float x2 -> sc (x1 < x2,rep) fc
-		 | Integer i2 -> sc (x1 < (float_of_int i2),rep) fc)
-	  | Integer i1 ->
-	      (match n2 with
-		   Float x2 -> sc (float_of_int i1 < x2,rep) fc
-		 | Integer i2 -> sc (i1 < i2,rep) fc))
-    | TermArithmeticGreater(t1,t2) -> let n1 = arithmetic_eval t1
-				      and n2 = arithmetic_eval t2
-      in
-	(match n1 with
-	    Float x1 ->
-	      (match n2 with
-		   Float x2 -> sc (x1 > x2,rep) fc
-		 | Integer i2 -> sc (x1 > float_of_int i2,rep) fc)
-	  | Integer i1 ->
-	      (match n2 with
-		   Float x2 -> sc (float_of_int i1 > x2,rep) fc
-		 | Integer i2 -> sc (i1 > i2,rep) fc))
-    | TermArithmeticLeq(t1,t2) -> let n1 = arithmetic_eval t1
-				  and n2 = arithmetic_eval t2
-      in
-	(match n1 with
-	    Float x1 ->
-	      (match n2 with
-		   Float x2 -> sc (x1 <= x2,rep) fc
-		 | Integer i2 -> sc (x1 <= float_of_int i2,rep) fc)
-	  | Integer i1 ->
-	      (match n2 with
-		   Float x2 -> sc (float_of_int i1 <= x2,rep) fc
-		 | Integer i2 -> sc (i1 <= i2,rep) fc))
-    | TermArithmeticGeq(t1,t2) -> let n1 = arithmetic_eval t1
-				  and n2 = arithmetic_eval t2
-      in
-	(match n1 with
-	    Float x1 ->
-	      (match n2 with
-		   Float x2 -> sc (x1 >= x2,rep) fc
-		 | Integer i2 -> sc (x1 >= float_of_int i2,rep) fc)
-	  | Integer i1 ->
-	      (match n2 with
-		   Float x2 -> sc (float_of_int i1 >= x2,rep) fc
-		 | Integer i2 -> sc (i1 >= i2,rep) fc))
-    | TermNegation t ->
-	evaluate t database rep clauses
-	  (fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
-    | TermTermEquality(t1,t2) -> sc (t1 = t2,rep) fc
-    | TermIs(t1,t2) -> let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
-      in
-	sc (unify t1 n2 []) fc
-    | TermFunctor(nam,args) -> functor_eval repterm database rep clauses sc fc cut_c
-    | TermAnd(t1,t2) -> 
-	evaluate t1 database rep clauses (* evaluate first term *)
-	  (fun vt1 fc1 ->
-	     if fst vt1 then
-	       evaluate t2 database (snd vt1) clauses
-		 (fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation then the other one will be tried to be evaluated *)
-	     else sc (false,[]) fc1) fc cut_c
-    | TermOr(t1,t2) -> evaluate t1 database rep clauses
-	(fun vt fc' -> sc vt fc')
-	  (fun () -> evaluate t2 database rep clauses sc fc cut_c) cut_c (* evaluate first term *)
-    | TermCut -> sc (true,rep) cut_c
-    | _ -> raise Cant_evaluate
+	let repterm = replace term rep             (* apply replacement to the term *)
+	in
+		match repterm with
+			| TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
+			| TermTermNotUnify(term1,term2) -> 
+				let uni = unify term1 term2 rep in
+					sc (not (fst uni), snd uni) fc
+			| TermArithmeticEquality(t1,t2) ->
+				let n1 = arithmetic_eval t1 (* find value of left  term *)
+				and n2 = arithmetic_eval t2 (* find value of right term *)
+				in
+					if n1 = n2 
+					then sc (true,rep) fc
+					else sc (false,[]) fc
+			| TermArithmeticInequality(t1,t2) -> 
+				let n1 = arithmetic_eval t1
+				and n2 = arithmetic_eval t2
+				in
+					if n1 = n2 then sc (false,[]) fc
+					else sc (true,rep) fc
+			| TermArithmeticLess(t1,t2) -> 
+				let n1 = arithmetic_eval t1
+				and n2 = arithmetic_eval t2
+				in
+					(match n1 with
+						| Integer i1 ->
+							(match n2 with
+								| Integer i2 -> sc (i1 < i2,rep) fc))
+			| TermArithmeticGreater(t1,t2) -> 
+				let n1 = arithmetic_eval t1
+				and n2 = arithmetic_eval t2
+				in
+					(match n1 with
+						| Integer i1 ->
+							(match n2 with
+								| Integer i2 -> sc (i1 > i2,rep) fc))
+			| TermArithmeticLeq(t1,t2) -> 
+				let n1 = arithmetic_eval t1
+				and n2 = arithmetic_eval t2
+				in
+					(match n1 with
+						| Integer i1 ->
+							(match n2 with
+								| Integer i2 -> sc (i1 <= i2,rep) fc))
+			| TermArithmeticGeq(t1,t2) -> 
+				let n1 = arithmetic_eval t1
+				and n2 = arithmetic_eval t2
+				in
+					(match n1 with
+						| Integer i1 ->
+							(match n2 with
+								| Integer i2 -> sc (i1 >= i2,rep) fc))
+			| TermNegation t ->
+				evaluate t database rep clauses
+					(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
+			| TermTermEquality(t1,t2) -> sc (t1 = t2,rep) fc
+			| TermIs(t1,t2) -> 
+				let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
+				in
+					sc (unify t1 n2 []) fc
+			| TermFunctor(nam,args) -> functor_eval repterm database rep clauses sc fc cut_c
+			| TermAnd(t1,t2) -> 
+				evaluate t1 database rep clauses (* evaluate first term *)
+					(fun vt1 fc1 ->
+						if fst vt1 then
+							evaluate t2 database (snd vt1) clauses
+								(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation then the other one will be tried to be evaluated *)
+						else sc (false,[]) fc1) fc cut_c
+			| TermOr(t1,t2) -> evaluate t1 database rep clauses
+				(fun vt fc' -> sc vt fc')
+				(fun () -> evaluate t2 database rep clauses sc fc cut_c) cut_c (* evaluate first term *)
+			| TermCut -> sc (true,rep) cut_c
+			| _ -> raise Cant_evaluate
 
 let quiet = true
 

@@ -432,25 +432,13 @@ name:
 ;
 
 number:
-    | UNSIGNEDFLOAT 
-    {
-        Types.Float ($1)
-    }
     | UNSIGNEDINTEGER
     {
         Types.Integer ($1)
     }
-    | MINUS UNSIGNEDFLOAT %prec UMINUS
-    {
-        Types.Float (-. $2) 
-    }
     | MINUS UNSIGNEDINTEGER %prec UMINUS
     { 
         Types.Integer (-$2) 
-    }
-    | PLUS UNSIGNEDFLOAT %prec UPLUS
-    {
-        Types.Float ($2)
     }
     | PLUS UNSIGNEDINTEGER %prec UPLUS
     {

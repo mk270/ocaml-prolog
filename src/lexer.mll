@@ -85,9 +85,7 @@ let nstring = '"' [^ '"']* '"'                           (* prolog strings *)
 
 let sign = '+' | '-'                                     (* signs *)
 let exp = ('e' | 'E') sign? digit+                       (* optional exponent *)
-let simple_float = digit* '.' digit+                     (* simplest float *)
 let simple_integer = digit+                              (* simplest integer *)
-let unsigned_float = simple_float exp?                   (* floats with no sign *)
 let unsigned_integer = simple_integer exp?               (* integers with no sign *)
 
 let whitespace = [' ' '\t' '\n']
@@ -121,11 +119,6 @@ rule token = parse
                 with
                     | Not_found -> NAME (id) 
         }
-
-        | unsigned_float         
-        {       
-                UNSIGNEDFLOAT (float_of_string (Lexing.lexeme lexbuf))    
-        } 
 
         | unsigned_integer 
         {       

@@ -74,7 +74,6 @@ and constant =
   | ConstantNumber of number             (* constant: number *)
 
 and number =
-  | Float of float      (* prolog float *)
   | Integer of int      (* prolog integers *)
 
 and name = string       (* prolog names *)

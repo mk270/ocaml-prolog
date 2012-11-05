@@ -19,8 +19,8 @@ let rec string_of_term term =
     | TermConstant const -> (match const with
 				  ConstantAtom str -> str
 				| ConstantNumber num -> (match num with
-							      Integer n -> string_of_int n
-							    | Float f -> string_of_float f))
+						| Integer n -> string_of_int n)
+	)
     | TermFunctor(nam,args) ->
 	
 	  nam^"("^(string_of_arguments args)^")"
