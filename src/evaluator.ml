@@ -54,18 +54,24 @@ let rec get_variables term list =
 
 (* makes variables in clause unique *)
 let make_unique clause =
-  let var_list = ref []
-  and replacement = ref []
-  in 
-  (match clause with
-       SingleClause term -> var_list := get_variables term []
-     | ClauseImplication (term1,term2) ->	
-	var_list := get_variables term2 (get_variables term1 []));
-  replacement := List.map (fun var -> (var, TermVariable (get_unique_var()))) !var_list;
-  (match clause with
-      SingleClause term -> SingleClause (replace term !replacement)
-    | ClauseImplication (term1,term2) ->
-	ClauseImplication (replace term1 !replacement, replace term2 !replacement))
+	let var_list = ref []
+	and replacement = ref []
+	in 
+		(match clause with
+			| SingleClause term -> 
+				var_list := get_variables term []
+			| ClauseImplication (term1,term2) ->
+				var_list := get_variables term2 (get_variables term1 []));
+
+		replacement := List.map 
+			(fun var -> (var, TermVariable (get_unique_var()))) 
+			!var_list;
+
+		(match clause with
+			| SingleClause term -> 
+				SingleClause (replace term !replacement)
+			| ClauseImplication (term1,term2) ->
+				ClauseImplication (replace term1 !replacement, replace term2 !replacement))
 
 
 
@@ -268,15 +274,17 @@ let print_yes = fun () ->
 	else print_string "Yes\n"
 
 (* evaluates all possible ways a term given a specific database *)
-let interpret term database interactive =
+let interpret term database interactive one_shot =
   (* asks if evaluation should be continued *)
   let more () =
-	if interactive
-	then (print_string "More?\n";
-		  if read_line() = ";" then true
-		  else false)
-	else
-		true
+	if one_shot
+    then false
+    else if interactive
+         then (print_string "More?\n";
+		       if read_line() = ";" 
+               then true
+		       else false)
+	     else true
   and filter replacement = (* filters replacement that only variables that exist in term remains *)
     let variables = (get_variables term []) in
     List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement
