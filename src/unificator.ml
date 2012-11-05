@@ -28,8 +28,6 @@ let string_of_term term =
 		| TermArithmeticMinus (t1, t2) -> (string_of_term t1) ^ " - " ^ (string_of_term t2)
 		| TermArithmeticMult (t1, t2) -> (string_of_term t1) ^ " * " ^ (string_of_term t2)
 		| TermArithmeticDiv (t1, t2) -> (string_of_term t1) ^ " / " ^ (string_of_term t2)
-		| TermArithmeticIntDiv (t1, t2) -> (string_of_term t1) ^ " // " ^ (string_of_term t2)
-		| TermArithmeticModulo (t1, t2) -> (string_of_term t1) ^ " mod " ^ (string_of_term t2)
 		| TermArithmeticEquality (t1, t2) -> (string_of_term t1) ^ " =:= " ^ (string_of_term t2)
 		| TermArithmeticInequality (t1, t2) -> (string_of_term t1) ^ " =\\= " ^ (string_of_term t2)
 		| TermArithmeticLess (t1, t2) -> (string_of_term t1) ^ " < " ^ (string_of_term t2)
@@ -79,8 +77,6 @@ let rec replace term replacement =
 		  | TermArithmeticMinus (t1,t2) -> TermArithmeticMinus (replace t1 replacement, replace t2 replacement)
 		  | TermArithmeticMult (t1,t2) -> TermArithmeticMult (replace t1 replacement, replace t2 replacement)
 		  | TermArithmeticDiv (t1,t2) -> TermArithmeticDiv (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticIntDiv (t1,t2) -> TermArithmeticIntDiv (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticModulo (t1,t2) -> TermArithmeticModulo (replace t1 replacement, replace t2 replacement)
 		  | TermArithmeticEquality (t1,t2) -> TermArithmeticEquality (replace t1 replacement, replace t2 replacement)
 		  | TermArithmeticInequality (t1,t2) -> TermArithmeticInequality (replace t1 replacement, replace t2 replacement)
 		  | TermArithmeticLess (t1,t2) -> TermArithmeticLess (replace t1 replacement, replace t2 replacement)
@@ -144,8 +140,6 @@ let rec unify term1 term2 rep =
 		| TermArithmeticMinus(t21,t22), TermArithmeticMinus(t11,t12)
 		| TermArithmeticMult(t21,t22), TermArithmeticMult(t11,t12)
 		| TermArithmeticDiv(t21,t22), TermArithmeticDiv(t11,t12)
-		| TermArithmeticIntDiv(t21,t22), TermArithmeticIntDiv(t11,t12)
-		| TermArithmeticModulo(t21,t22), TermArithmeticModulo(t11,t12)
 		| TermArithmeticEquality(t21,t22), TermArithmeticEquality(t11,t12)
 		| TermArithmeticInequality(t21,t22), TermArithmeticInequality(t11,t12)
 		| TermArithmeticLess(t21,t22), TermArithmeticLess(t11,t12)
@@ -219,8 +213,6 @@ let rec unify term1 term2 rep =
 		| TermArithmeticMinus _, _
 		| TermArithmeticMult _, _
 		| TermArithmeticDiv _, _
-		| TermArithmeticIntDiv _, _
-		| TermArithmeticModulo _, _
 		| TermArithmeticEquality _, _
 		| TermArithmeticInequality _, _
 		| TermArithmeticLess _, _

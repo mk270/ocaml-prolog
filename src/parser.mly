@@ -25,8 +25,8 @@
        TERM_ORDER_LESS TERM_ORDER_GEQ TERM_ORDER_LEQ
 %token DOUBLECOLON
 %token PLUS MINUS
-%token MULT DIV INTDIV LEFT_SHIFT RIGHT_SHIFT 
-       REM MOD DIVS MODS DIVU MODU POWER BITWISE_AND
+%token MULT DIV
+       BITWISE_AND
        BITWISE_OR BITWISE_NOT VAR_INSTANTIATED
 %token SEMICOLON COMMA COLON
 %token UMINUS UPLUS
@@ -36,7 +36,7 @@
 
 %right SEMICOLON COMMA
 %left PLUS MINUS
-%left MULT DIV INTDIV LEFT_SHIFT RIGHT_SHIFT
+%left MULT DIV
 %left BITWISE_AND BITWISE_OR BITWISE_NOT POWER
 %left TERM_EQ 
 %left TERM_UNIFY
@@ -50,7 +50,6 @@
 %left TERM_DECOMP
 %left DOUBLECOLON
 %right ARROW
-%right REM MOD DIVS MODS DIVU MODU
 %nonassoc COLONHYPHEN VAR_INSTANTIATED PIPE
 %nonassoc DOT DOUBLEDOT COLON CUT
 
@@ -269,53 +268,13 @@ term7:
 ;
 
 term8:
-    | term8 REM term8
-    {
-        Types.TermArithmeticRemainder ($1, $3)
-    }
-    | term8 MOD term8
-    {
-        Types.TermArithmeticModulo ($1, $3)
-    }
-    | term8 DIVS term8
-    {
-        Types.TermArithmeticDivs ($1, $3)
-    }
-    | term8 MODS term8
-    {
-        Types.TermArithmeticMods ($1, $3)
-    }
-    | term8 DIVU term8
-    {
-        Types.TermArithmeticDivu ($1, $3)
-    }
-    | term8 MODU term8
-    {
-        Types.TermArithmeticModu ($1, $3)
-    }
     | term8 DIV term8
     {
         Types.TermArithmeticDiv ($1, $3)
     }
-    | term8 INTDIV term8
-    {
-        Types.TermArithmeticIntDiv ($1, $3)
-    }
     | term8 MULT term8
     {
         Types.TermArithmeticMult ($1, $3)
-    }
-    | term8 RIGHT_SHIFT term8
-    {
-        Types.TermArithmeticRightShift ($1, $3)
-    }
-    | term8 LEFT_SHIFT term8
-    {
-        Types.TermArithmeticLeftShift ($1, $3)
-    }
-    | term8 POWER term8
-    {
-        Types.TermArithmeticPower ($1, $3)
     }
     | VAR_INSTANTIATED term8
     {
