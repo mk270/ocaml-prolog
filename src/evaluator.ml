@@ -61,44 +61,20 @@ let make_unique = function
 							   replace term2 replacement)
 
 (* evaluates arithmetic expression *)
-let rec arithmetic_eval term = 
-	match term with
-		| TermConstant const -> (match const with
-				| ConstantNumber n -> n
-			    | _ -> raise Not_a_number)
-		| TermArithmeticPlus(t1,t2) -> 
-			let n1 = (arithmetic_eval t1) 
-			and n2 = (arithmetic_eval t2)
-			in
-				(match n1 with
-					| Integer i1 -> (match n2 with
-							| Integer i2 -> Integer (i1 + i2)))
-		| TermArithmeticMinus(t1,t2) -> 
-			let n1 = (arithmetic_eval t1) 
-			and n2 = (arithmetic_eval t2)
-			in
-				(match n1 with
-					| Integer i1 -> (match n2 with
-							| Integer i2 -> Integer (i1 - i2)))
-		| TermArithmeticMult(t1,t2) -> 
-			let n1 = (arithmetic_eval t1) 
-			and n2 = (arithmetic_eval t2)
-			in
-				(match n1 with
-					| Integer i1 -> (match n2 with
-							| Integer i2 -> Integer (i1 * i2)))
-		| TermArithmeticDiv(t1,t2) -> 
-			let n1 = (arithmetic_eval t1) 
-			and n2 = (arithmetic_eval t2)
-			in
-				(match n1 with
-					| Integer i1 -> (match n2 with
-							| Integer i2 -> Integer (i1 / i2)))
-		| _ -> raise Not_a_number
+let rec apply_arithmetic_operator t1 t2 f =
+	let n1 = arithmetic_eval t1
+	and n2 = arithmetic_eval t2
+		in match n1, n2 with
+			| Integer i1, Integer i2 -> Integer (f i1 i2)
+and arithmetic_eval = function
+	| TermConstant (ConstantNumber n) -> n
+	| TermConstant _ -> raise Not_a_number
+	| TermArithmeticPlus(t1,t2) -> apply_arithmetic_operator t1 t2 (+)
+	| TermArithmeticMinus(t1,t2) -> apply_arithmetic_operator t1 t2 (-)
+	| TermArithmeticMult(t1,t2) -> apply_arithmetic_operator t1 t2 ( * )
+	| TermArithmeticDiv(t1,t2) -> apply_arithmetic_operator t1 t2 (/)
+	| _ -> raise Not_a_number
 			
-			
-
-
 (* evaluates functor 
 functor_term is a term to evaluate
 database is a database loaded into the program 
