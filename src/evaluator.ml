@@ -13,44 +13,43 @@ let get_unique_var() =
 
 (* gets list of variables in term *)
 let rec get_variables term list =
-  let rec get_vars_from_args args list = (* gets variables from arguments *)
-    match args with
-	[] -> list
-      | t::terms -> get_vars_from_args terms (get_variables t list)
-  in
-    match term with
-	TermOr(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermAnd(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermVariable v -> if List.exists (fun var -> var = v) list then list else v::list
-      | TermString str -> list
-      | TermConstant const -> list
-      | TermFunctor(nam,args) -> 	  
-	    get_vars_from_args args list
-      | TermIs(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticPlus(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticMinus(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticMult(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticDiv(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticIntDiv(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticModulo(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticRemainder(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticInequality(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticLess(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticGreater(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticLeq(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermArithmeticGeq(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermTermUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermTermNotUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermNegation t -> get_variables t list
-      | TermTermEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
-      | TermList listterm ->
-	  (match listterm with
-	       EmptyList -> list
-	     | NormalList args -> get_vars_from_args args list
-	     | DividedList (args,term) -> get_variables term (get_vars_from_args args list))
-      | _ -> list
-
+	let rec get_vars_from_args args list = (* gets variables from arguments *)
+		match args with
+			| [] -> list
+			| t::terms -> get_vars_from_args terms (get_variables t list)
+	in
+		match term with
+			| TermOr(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermAnd(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermVariable v -> if List.exists (fun var -> var = v) list then list else v::list
+			| TermString str -> list
+			| TermConstant const -> list
+			| TermFunctor(nam,args) -> 
+				get_vars_from_args args list
+			| TermIs(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticPlus(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticMinus(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticMult(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticDiv(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticIntDiv(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticModulo(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticRemainder(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticInequality(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticLess(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticGreater(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticLeq(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermArithmeticGeq(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermTermUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermTermNotUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermNegation t -> get_variables t list
+			| TermTermEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermList listterm ->
+				(match listterm with
+					| EmptyList -> list
+					| NormalList args -> get_vars_from_args args list
+					| DividedList (args,term) -> get_variables term (get_vars_from_args args list))
+			| _ -> list
 
 let map_uniques = List.map (fun var -> (var, TermVariable (get_unique_var ())))
 
