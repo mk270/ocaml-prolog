@@ -126,7 +126,8 @@ let rec functor_eval functor_term database rep clauses sc fc cut_c =
 	let term = replace functor_term rep in (* replace variables in term *)
 		match clauses with
 			| [] -> sc (false,[]) fc (* no more facts or implications in database *)
-			| dclause::clauses' -> 
+			| dclause::clauses'' ->
+				let clauses' = Shuffle.shuffle clauses'' in
 				let clause = make_unique dclause in
 					(match clause with
 						| SingleClause dterm -> 
