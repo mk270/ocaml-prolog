@@ -111,16 +111,15 @@ let fail_unify = (false, [])
 (* tries to unify two terms, returns if terms can be unified and replacement needed for unification *)
 let rec unify term1 term2 rep =
 	let rec unify_args args1 args2 rep = (* unifies arguments of functors *)
-		(match args1 with
-			| [] -> (true,rep)
-			| term1 :: terms1 -> (match args2 with
-					| [] -> raise Type_error
-					| term2::terms2 -> 
-						let uni = unify term1 term2 rep
-						in
-							if fst uni 
-							then unify_args terms1 terms2 (snd uni) 
-							else fail_unify))
+		match args1, args2 with
+			| [], _ -> (true,rep)
+			| term1 :: terms1, [] -> raise Type_error
+			| term1 :: terms1, term2::terms2 -> 
+				let uni = unify term1 term2 rep
+				in
+					if fst uni 
+					then unify_args terms1 terms2 (snd uni) 
+					else fail_unify
 	and divide_list list n =
 		let rec divlist list1 list2 n =
 			match list2 with
