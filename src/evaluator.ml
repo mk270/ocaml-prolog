@@ -52,28 +52,17 @@ let rec get_variables term list =
       | _ -> list
 
 
+let map_uniques = List.map (fun var -> (var, TermVariable (get_unique_var ())))
+
 (* makes variables in clause unique *)
-let make_unique clause =
-	let var_list = ref []
-	and replacement = ref []
-	in 
-		(match clause with
-			| SingleClause term -> 
-				var_list := get_variables term []
-			| ClauseImplication (term1,term2) ->
-				var_list := get_variables term2 (get_variables term1 []));
-
-		replacement := List.map 
-			(fun var -> (var, TermVariable (get_unique_var()))) 
-			!var_list;
-
-		(match clause with
-			| SingleClause term -> 
-				SingleClause (replace term !replacement)
-			| ClauseImplication (term1,term2) ->
-				ClauseImplication (replace term1 !replacement, replace term2 !replacement))
-
-
+let make_unique = function
+	| SingleClause term -> 
+		SingleClause (replace term 
+						  (map_uniques (get_variables term [])))
+	| ClauseImplication (term1, term2) ->
+		let replacement = map_uniques (get_variables term2 (get_variables term1 [])) in
+			ClauseImplication (replace term1 replacement,
+							   replace term2 replacement)
 
 (* evaluates arithmetic expression *)
 let rec arithmetic_eval term = 
