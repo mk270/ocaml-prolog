@@ -109,6 +109,21 @@ let rec functor_eval functor_term database rep clauses sc fc cut_c =
 						
 (* evaluates terms *)
 and evaluate term database rep clauses sc fc cut_c =
+	let arithmetic_comparison t1 t2 f =
+		let n1 = arithmetic_eval t1
+		and n2 = arithmetic_eval t2
+		in
+			(match n1, n2 with
+				| Integer i1, Integer i2 -> sc ((f i1 i2), rep) fc)
+	and arithmetic_equality t1 t2 flag =
+		let n1 = arithmetic_eval t1
+		and n2 = arithmetic_eval t2
+		in
+		    if (n1 = n2) = flag
+			then sc (true, rep) fc
+			else sc (false, []) fc
+	in
+
 	let repterm = replace term rep             (* apply replacement to the term *)
 	in
 		match repterm with
@@ -116,51 +131,12 @@ and evaluate term database rep clauses sc fc cut_c =
 			| TermTermNotUnify(term1,term2) -> 
 				let uni = unify term1 term2 rep in
 					sc (not (fst uni), snd uni) fc
-			| TermArithmeticEquality(t1,t2) ->
-				let n1 = arithmetic_eval t1 (* find value of left  term *)
-				and n2 = arithmetic_eval t2 (* find value of right term *)
-				in
-					if n1 = n2 
-					then sc (true,rep) fc
-					else sc (false,[]) fc
-			| TermArithmeticInequality(t1,t2) -> 
-				let n1 = arithmetic_eval t1
-				and n2 = arithmetic_eval t2
-				in
-					if n1 = n2 then sc (false,[]) fc
-					else sc (true,rep) fc
-			| TermArithmeticLess(t1,t2) -> 
-				let n1 = arithmetic_eval t1
-				and n2 = arithmetic_eval t2
-				in
-					(match n1 with
-						| Integer i1 ->
-							(match n2 with
-								| Integer i2 -> sc (i1 < i2,rep) fc))
-			| TermArithmeticGreater(t1,t2) -> 
-				let n1 = arithmetic_eval t1
-				and n2 = arithmetic_eval t2
-				in
-					(match n1 with
-						| Integer i1 ->
-							(match n2 with
-								| Integer i2 -> sc (i1 > i2,rep) fc))
-			| TermArithmeticLeq(t1,t2) -> 
-				let n1 = arithmetic_eval t1
-				and n2 = arithmetic_eval t2
-				in
-					(match n1 with
-						| Integer i1 ->
-							(match n2 with
-								| Integer i2 -> sc (i1 <= i2,rep) fc))
-			| TermArithmeticGeq(t1,t2) -> 
-				let n1 = arithmetic_eval t1
-				and n2 = arithmetic_eval t2
-				in
-					(match n1 with
-						| Integer i1 ->
-							(match n2 with
-								| Integer i2 -> sc (i1 >= i2,rep) fc))
+			| TermArithmeticEquality(t1,t2) -> arithmetic_equality t1 t2 true
+			| TermArithmeticInequality(t1,t2) -> arithmetic_equality t1 t2 false
+			| TermArithmeticLess(t1,t2) -> arithmetic_comparison t1 t2 (<)
+			| TermArithmeticGreater(t1,t2) -> arithmetic_comparison t1 t2 (>)
+			| TermArithmeticLeq(t1,t2) -> arithmetic_comparison t1 t2 (<=)
+			| TermArithmeticGeq(t1,t2) -> arithmetic_comparison t1 t2 (>=)
 			| TermNegation t ->
 				evaluate t database rep clauses
 					(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
@@ -184,7 +160,7 @@ and evaluate term database rep clauses sc fc cut_c =
 			| TermCut -> sc (true,rep) cut_c
 			| _ -> raise Cant_evaluate
 
-let quiet = true
+let quiet = false
 
 let thunk = fun () -> ()
 
