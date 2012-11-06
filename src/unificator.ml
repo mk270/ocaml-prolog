@@ -131,6 +131,21 @@ let rec unify term1 term2 rep =
 	and rterm1 = replace term1 rep  (* append replacment for terms to unify *)
 	and rterm2 = replace term2 rep
 
+	and unify_mismatched_lists args_dl term args_nl nl_is_rterm2 =
+		if (List.length args_dl) > (List.length args_nl)
+		then fail_unify
+		else
+			let (args_nl',args_nl'') = divide_list args_nl (List.length args_dl)
+			in
+			let uni = 
+				if nl_is_rterm2
+				then unify_args args_nl' args_dl rep
+				else unify_args args_dl args_nl' rep
+			in
+				if fst uni
+				then unify (TermList (NormalList args_nl'')) term (snd uni)
+				else fail_unify
+
 	and unify_rterm2 rterm1 rterm2 = match rterm2, rterm1 with
 		| TermVariable v2, _ -> (true,(add_replacement (v2,rterm1) rep))
 		| TermAnd(t21,t22), TermAnd(t11,t12) 
@@ -168,26 +183,10 @@ let rec unify term1 term2 rep =
 					if (List.length args2) = (List.length args1)
 					then unify_args args1 args2 rep
 					else fail_unify
-		| TermList (NormalList args2), TermList (DividedList (args1,term)) ->
-					if (List.length args1) > (List.length args2)
-					then fail_unify
-					else
-						let (args2',args2'') = divide_list args2 (List.length args1)
-						in
-						let uni = unify_args args2' args1 rep in
-							if fst uni
-							then unify (TermList (NormalList args2'')) term (snd uni)
-							else fail_unify
-		| TermList (DividedList(args2,term2)), TermList (NormalList args1) ->
-					if (List.length args2) > (List.length args1)
-					then fail_unify
-					else
-						let (args1',args1'') = divide_list args1 (List.length args2)
-						in
-						let uni = unify_args args2 args1' rep in
-							if fst uni
-							then unify (TermList (NormalList args1'')) term2 (snd uni)
-							else fail_unify
+		| TermList (NormalList args_nl), TermList (DividedList (args_dl,term)) ->
+			unify_mismatched_lists args_dl term args_nl true
+		| TermList (DividedList(args_dl,term)), TermList (NormalList args_nl) ->
+			unify_mismatched_lists args_dl term args_nl false
 		| TermList (DividedList(args2,term2)), TermList (DividedList(args1,term1)) ->
 					if (List.length args2) >= (List.length args1)
 					then let (args2', args2'') = divide_list args2 (List.length args1)
