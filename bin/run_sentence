@@ -4,12 +4,9 @@ post_process () {
 	sed 's/^:- // ; s/^_ = //' | tr -d '[|]' | sed 's/  / /g'|grep .
 }
  
-PROLOG="$(dirname $0)/opl -n -q -r"
 SRC=${1-$(dirname $0)/tests/lang2.opl}
 START_TERM=${2-sentence}
 MAX=${3-100}
+PROLOG="$(dirname $0)/opl -n -q -r -l $MAX"
 
-for i in $(seq 1 $MAX)
-do
-  echo "${START_TERM}(_,[])." | $PROLOG $SRC | post_process
-done
+echo "${START_TERM}(_,[])." | $PROLOG $SRC | post_process
