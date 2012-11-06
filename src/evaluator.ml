@@ -176,31 +176,30 @@ let print_yes = fun () ->
 
 (* evaluates all possible ways a term given a specific database *)
 let interpret term database interactive one_shot =
-  (* asks if evaluation should be continued *)
-  let more () =
-	if one_shot
-    then false
-    else if interactive
-         then (print_string "More?\n";
-		       if read_line() = ";" 
-               then true
-		       else false)
-	     else true
-  and filter replacement = (* filters replacement that only variables that exist in term remains *)
-    let variables = (get_variables term []) in
-    List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement
-  in
-      evaluate term database [] database
-		  (fun vt fc -> 
-			  if fst vt 
-			  then (print_yes ();
-					print_replacement (filter (snd vt)); 
-					print_endline "";
-					if more () 
-					then fc () 
-					else ()
-			  )
-			  else fc ()
-		  )
-		  print_no thunk
-		  
+	(* asks if evaluation should be continued *)
+	let more () =
+		if one_shot
+		then false
+		else if interactive
+        then (print_string "More?\n";
+		      if read_line() = ";" 
+              then true
+		      else false)
+	    else true
+	and filter replacement = (* filters replacement that only variables that exist in term remains *)
+		let variables = (get_variables term []) in
+			List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement
+	in
+		evaluate term database [] database
+			(fun vt fc -> 
+				if fst vt 
+				then (print_yes ();
+					  print_replacement (filter (snd vt)); 
+					  print_endline "";
+					  if more () 
+					  then fc () 
+					  else ()
+				)
+				else fc ()
+			)
+			print_no thunk
