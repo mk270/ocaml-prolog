@@ -59,23 +59,25 @@ let prompt () =
 	print_string ":- "; 
 	flush stdout
 
-let read_eval_print database =
+let one_shot = false
+
+let read_eval_print database randomise interactive quiet =
 	prompt ();
 
-    try	let db = shuffle database
-	    and buff = Lexing.from_string (read_line ())
+    try	
+	    let buff = Lexing.from_string (read_line ())
 		in
-			interpret (Parser.query Lexer.token buff) db false false;
+			interpret (Parser.query Lexer.token buff) database interactive one_shot randomise quiet;
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
             print_endline "Parse error. Did you forget a dot?"
         | Failure s -> print_endline ("Failed: " ^ s) 
 
-let repl database = 
+let repl database randomise interactive quiet = 
     try 
 		let rec main_loop_body () =
-			read_eval_print database; (* exception on EOF *)
+			read_eval_print database randomise interactive quiet; (* exception on EOF *)
 			main_loop_body ()
 		in 
 			main_loop_body ()
@@ -99,9 +101,13 @@ let main () =
 	and add_to_filenames = fun s -> filenames := s :: !filenames 
 	in
 		Arg.parse specs add_to_filenames "Usage: opl filename1 filename2 ...";
-		repl (read_database !filenames)
+
+		if !randomise
+		then Random.self_init ()
+		else ();
+
+		repl (read_database !filenames) !randomise !interactive !quiet
 
 let _ = 
-	Random.self_init ();
 	main ()  
              

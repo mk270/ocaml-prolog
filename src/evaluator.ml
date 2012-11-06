@@ -81,101 +81,116 @@ database is a database loaded into the program
 rep is a replacement
 clauses is a list of clauses from database that haven't beed checked yet
 cont is a continuation *)
-let rec functor_eval functor_term database rep clauses sc fc cut_c =
-	let term = replace functor_term rep in (* replace variables in term *)
-		match clauses with
-			| [] -> sc (false,[]) fc (* no more facts or implications in database *)
-			| dclause::clauses'' ->
-				let clauses' = Shuffle.shuffle clauses'' in
-				let clause = make_unique dclause in
-					(match clause with
-						| SingleClause dterm -> 
-							let uni = (unify term dterm rep)   (* found a fact in database *)
-							in
-								if fst uni 
-								then sc uni (fun() -> functor_eval term database rep clauses' sc fc cut_c) (* term 
-								   unifies with fact in database, so store rest of possible calculations 
-								   and return result of unification *)
-								else functor_eval term database rep clauses' sc fc cut_c (* term doesn't unify 
-																	with fact, so try another possibilities *)
-						| ClauseImplication (dterm, condition) ->
-							let uni = (unify term dterm rep) (* found an implication in database, 
-																try to unificate with it's resault (left side term) *)
-							in		 
-								if fst uni 
-								then evaluate condition database (snd uni) database 
-									(fun vt fc' -> sc vt fc') (fun () -> functor_eval term database rep clauses' sc fc cut_c) fc
-								else functor_eval term database rep clauses' sc fc cut_c)
-						
-(* evaluates terms *)
-and evaluate term database rep clauses sc fc cut_c =
-	let arithmetic_comparison t1 t2 f =
-		let n1 = arithmetic_eval t1
-		and n2 = arithmetic_eval t2
-		in
-			(match n1, n2 with
-				| Integer i1, Integer i2 -> sc ((f i1 i2), rep) fc)
-	and arithmetic_equality t1 t2 flag =
-		let n1 = arithmetic_eval t1
-		and n2 = arithmetic_eval t2
-		in
-		    if (n1 = n2) = flag
-			then sc (true, rep) fc
-			else sc (false, []) fc
+
+let evaluate term database rep clauses sc fc cut_c randomise =
+	let maybe_shuffle clauses = 
+		if randomise 
+		then Shuffle.shuffle clauses 
+		else clauses
 	in
 
-	let repterm = replace term rep             (* apply replacement to the term *)
-	in
-		match repterm with
-			| TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
-			| TermTermNotUnify(term1,term2) -> 
-				let uni = unify term1 term2 rep in
-					sc (not (fst uni), snd uni) fc
-			| TermArithmeticEquality(t1,t2) -> arithmetic_equality t1 t2 true
-			| TermArithmeticInequality(t1,t2) -> arithmetic_equality t1 t2 false
-			| TermArithmeticLess(t1,t2) -> arithmetic_comparison t1 t2 (<)
-			| TermArithmeticGreater(t1,t2) -> arithmetic_comparison t1 t2 (>)
-			| TermArithmeticLeq(t1,t2) -> arithmetic_comparison t1 t2 (<=)
-			| TermArithmeticGeq(t1,t2) -> arithmetic_comparison t1 t2 (>=)
-			| TermNegation t ->
-				evaluate t database rep clauses
-					(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
-			| TermTermEquality(t1,t2) -> sc (t1 = t2,rep) fc
-			| TermIs(t1,t2) -> 
-				let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
+	let rec functor_eval functor_term database rep clauses sc fc cut_c =
+		let term = replace functor_term rep in (* replace variables in term *)
+		let eval_clause clauses' = function
+			| SingleClause dterm -> 
+			(* found a fact in database *)
+				let uni = (unify term dterm rep)
 				in
-					sc (unify t1 n2 []) fc
-			| TermFunctor(nam,args) -> functor_eval repterm database rep clauses sc fc cut_c
-			| TermAnd(t1,t2) -> 
-				evaluate t1 database rep clauses (* evaluate first term *)
-					(fun vt1 fc1 ->
-						if fst vt1 then
-							evaluate t2 database (snd vt1) clauses
-								(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation 
-																		 then the other one will be tried to be evaluated *)
-						else sc (false,[]) fc1) fc cut_c
-			| TermOr(t1,t2) -> evaluate t1 database rep clauses
-				(fun vt fc' -> sc vt fc')
-				(fun () -> evaluate t2 database rep clauses sc fc cut_c) cut_c (* evaluate first term *)
-			| TermCut -> sc (true,rep) cut_c
-			| _ -> raise Cant_evaluate
+					if fst uni 
+					then sc uni (fun() -> functor_eval term database rep clauses' sc fc cut_c) 
+				(* term unifies with fact in database, 
+				   so store rest of possible calculations 
+				   and return result of unification *)
+				(* otherwise, it didn't unify => try another possibilities *)
+					else functor_eval term database rep clauses' sc fc cut_c 
+			| ClauseImplication (dterm, condition) ->
+			(* found an implication in database, 
+			   try to unificate with its result (left side term) *)
+				let uni = (unify term dterm rep) 
+				in		 
+					if fst uni 
+					then evaluate condition database (snd uni) database 
+						(fun vt fc' -> sc vt fc') 
+						(fun () -> functor_eval term database rep clauses' sc fc cut_c) 
+						fc
+					else functor_eval term database rep clauses' sc fc cut_c
+		in
+			match clauses with
+				| [] -> sc (false,[]) fc (* no more facts or implications in database *)
+				| dclause :: clauses'' ->
+					let clauses' = maybe_shuffle clauses''
+					in
+						eval_clause clauses' (make_unique dclause)
+							
+							
+(* evaluates terms *)
+	and evaluate term database rep clauses sc fc cut_c =
+		let arithmetic_comparison t1 t2 f =
+			let n1 = arithmetic_eval t1
+			and n2 = arithmetic_eval t2
+			in
+				(match n1, n2 with
+					| Integer i1, Integer i2 -> sc ((f i1 i2), rep) fc)
+		and arithmetic_equality t1 t2 flag =
+			let n1 = arithmetic_eval t1
+			and n2 = arithmetic_eval t2
+			in
+				if (n1 = n2) = flag
+				then sc (true, rep) fc
+				else sc (false, []) fc
+		in
 
-let quiet = true
-
-let thunk = fun () -> ()
-
-let print_no = fun () -> 
-	if quiet
-	then ()
-	else print_string "No\n"
-
-let print_yes = fun () ->
-	if quiet
-	then ()
-	else print_string "Yes\n"
+		let repterm = replace term rep             (* apply replacement to the term *)
+		in
+			match repterm with
+				| TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
+				| TermTermNotUnify(term1,term2) -> 
+					let uni = unify term1 term2 rep in
+						sc (not (fst uni), snd uni) fc
+				| TermArithmeticEquality(t1,t2) -> arithmetic_equality t1 t2 true
+				| TermArithmeticInequality(t1,t2) -> arithmetic_equality t1 t2 false
+				| TermArithmeticLess(t1,t2) -> arithmetic_comparison t1 t2 (<)
+				| TermArithmeticGreater(t1,t2) -> arithmetic_comparison t1 t2 (>)
+				| TermArithmeticLeq(t1,t2) -> arithmetic_comparison t1 t2 (<=)
+				| TermArithmeticGeq(t1,t2) -> arithmetic_comparison t1 t2 (>=)
+				| TermNegation t ->
+					evaluate t database rep clauses
+						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
+				| TermTermEquality(t1,t2) -> sc (t1 = t2,rep) fc
+				| TermIs(t1,t2) -> 
+					let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
+					in
+						sc (unify t1 n2 []) fc
+				| TermFunctor(nam,args) -> functor_eval repterm database rep clauses sc fc cut_c
+				| TermAnd(t1,t2) -> 
+					evaluate t1 database rep clauses (* evaluate first term *)
+						(fun vt1 fc1 ->
+							if fst vt1 then
+								evaluate t2 database (snd vt1) clauses
+									(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation 
+																			 then the other one will be tried to be evaluated *)
+							else sc (false,[]) fc1) fc cut_c
+				| TermOr(t1,t2) -> evaluate t1 database rep clauses
+					(fun vt fc' -> sc vt fc')
+					(fun () -> evaluate t2 database rep clauses sc fc cut_c) cut_c (* evaluate first term *)
+				| TermCut -> sc (true,rep) cut_c
+				| _ -> raise Cant_evaluate
+	in
+		evaluate term database rep clauses sc fc cut_c
 
 (* evaluates all possible ways a term given a specific database *)
-let interpret term database interactive one_shot =
+let interpret term database interactive one_shot randomise quiet =
+	let thunk = fun () -> () 
+	and print_no = fun () -> 
+		if quiet
+		then ()
+		else print_string "No\n"
+	and print_yes = fun () ->
+		if quiet
+		then ()
+		else print_string "Yes\n"
+	in
+
 	(* asks if evaluation should be continued *)
 	let more () =
 		if one_shot
@@ -186,20 +201,22 @@ let interpret term database interactive one_shot =
               then true
 		      else false)
 	    else true
-	and filter replacement = (* filters replacement that only variables that exist in term remains *)
+	and filter replacement = 
+		(* filters replacement that only variables that exist in term remains *)
 		let variables = (get_variables term []) in
-			List.filter (fun (var,_) -> List.exists (fun v -> v = var) variables) replacement
+			List.filter 
+				(fun (var,_) -> List.exists 
+					(fun v -> v = var) variables) replacement
+	in 
+	let interact = fun vt fc -> 
+		if fst vt 
+		then (print_yes ();
+			  print_replacement (filter (snd vt)); 
+			  print_endline "";
+			  if more () 
+			  then fc () 
+			  else ()
+		)
+		else fc ()
 	in
-		evaluate term database [] database
-			(fun vt fc -> 
-				if fst vt 
-				then (print_yes ();
-					  print_replacement (filter (snd vt)); 
-					  print_endline "";
-					  if more () 
-					  then fc () 
-					  else ()
-				)
-				else fc ()
-			)
-			print_no thunk
+		evaluate term database [] database interact	print_no thunk randomise
