@@ -69,10 +69,10 @@ let rec apply_arithmetic_operator t1 t2 f =
 and arithmetic_eval = function
 	| TermConstant (ConstantNumber n) -> n
 	| TermConstant _ -> raise Not_a_number
-	| TermArithmeticPlus(t1,t2) -> apply_arithmetic_operator t1 t2 (+)
+	| TermArithmeticPlus(t1,t2)  -> apply_arithmetic_operator t1 t2 (+)
 	| TermArithmeticMinus(t1,t2) -> apply_arithmetic_operator t1 t2 (-)
-	| TermArithmeticMult(t1,t2) -> apply_arithmetic_operator t1 t2 ( * )
-	| TermArithmeticDiv(t1,t2) -> apply_arithmetic_operator t1 t2 (/)
+	| TermArithmeticMult(t1,t2)  -> apply_arithmetic_operator t1 t2 ( * )
+	| TermArithmeticDiv(t1,t2)   -> apply_arithmetic_operator t1 t2 (/)
 	| _ -> raise Not_a_number
 			
 (* evaluates functor 
