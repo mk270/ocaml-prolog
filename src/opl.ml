@@ -29,31 +29,19 @@ let slurp_file filename =
  * params - program parameters
  *)
 let read_database params = 
- 
-    let database = ref []           (* database we create *)
-    in          
-
-    let extend_database filename =                          
+    let clauses_from_file filename =                          
 		let base_filename = Filename.basename filename
 		in
 			try
 				let buffer = slurp_file filename in
-					database := (Parser.clause_list Lexer.token 
-									 (Lexing.from_string buffer)) @ !database
+					Parser.clause_list Lexer.token 
+									 (Lexing.from_string buffer)
 			with 
-				| Sys_error s -> 
-					print_endline (base_filename ^ ": " ^ s)
 				| e -> 
 					print_endline (base_filename ^ ": " ^ " Error occurred.");
 					raise e
-    in
-	let process_file filename =
-		if Sys.file_exists filename
-        then extend_database filename
-        else print_endline ("File " ^ (Filename.basename filename) ^ " does not exist.")
 	in
-        List.iter process_file params;
-        !database
+        List.flatten (List.map clauses_from_file params)
 
 let prompt () =
 	print_string ":- "; 
