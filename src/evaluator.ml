@@ -75,6 +75,11 @@ and arithmetic_eval = function
 	| TermArithmeticDiv(t1,t2)   -> apply_arithmetic_operator t1 t2 (/)
 	| _ -> raise Not_a_number
 			
+let maybe_shuffle randomise clauses = 
+	if randomise 
+	then Shuffle.shuffle clauses 
+	else clauses
+
 (* evaluates functor 
 functor_term is a term to evaluate
 database is a database loaded into the program 
@@ -83,11 +88,7 @@ clauses is a list of clauses from database that haven't beed checked yet
 cont is a continuation *)
 
 let evaluate term database rep clauses sc fc cut_c randomise =
-	let maybe_shuffle clauses = 
-		if randomise 
-		then Shuffle.shuffle clauses 
-		else clauses
-	in
+	let maybe_shuffle = maybe_shuffle randomise in
 
 	let rec functor_eval functor_term database rep clauses sc fc cut_c =
 		let term = replace functor_term rep in (* replace variables in term *)
@@ -219,4 +220,5 @@ let interpret term database interactive one_shot randomise quiet =
 		)
 		else fc ()
 	in
+	let database = maybe_shuffle randomise database in
 		evaluate term database [] database interact	print_no thunk randomise
