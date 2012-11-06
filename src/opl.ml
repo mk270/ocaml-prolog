@@ -66,29 +66,32 @@ let read_database params =
  *)
 let main () =
 
-    let database = read_database Sys.argv                       (* first, we have to read knowledge database *) 
-    and buff     = ref (Lexing.from_string(""))                 (* then we run interpreter *)
+    let database = read_database Sys.argv
     in 
     	try 
-	   while (true) do					(* while not EOF *)
-	    	print_string ":- ";				(* print prompt *)
+			while (true) 				(* while not EOF *)
+			do	
+	    		print_string ":- ";
                 flush stdout;
 
                 try
-					let db = shuffle database in
-						buff := Lexing.from_string(read_line());	(* read the expression *)
-						interpret (Parser.query Lexer.token !buff) db false false;    (* create it's syntax tree*)		    
+					let db = shuffle database
+						(* read the expression *)
+					and	buff = Lexing.from_string(read_line())
+						(* create its syntax tree*)
+					in
+						interpret (Parser.query Lexer.token buff) db false false;
                 with
-                    | Failure ("lexing: empty token")           (* lexing failure *)
-                    | Parsing.Parse_error ->                    (* parsing failure *)
+                    | Failure ("lexing: empty token")    (* lexing failure *)
+                    | Parsing.Parse_error ->             (* parsing failure *)
                         print_endline "Parse error. Did you forget a dot?"
                     | Failure s -> print_endline ("Failed: " ^ s) 
-       done
+			done
 		with
 			| End_of_file -> (print_string "\n"; exit 0)
             |      _      -> (print_endline "Error occured."; exit 0)
-
-
+				
+				
 let _ = 
 	Random.self_init ();
 	main ()  
