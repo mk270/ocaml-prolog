@@ -47,44 +47,55 @@ let prompt () =
 	print_string ":- "; 
 	flush stdout
 
-let one_shot = false
+let read_eval_print database randomise interactive quiet limit =
+	let one_shot = limit > 0 in
 
-let read_eval_print database randomise interactive quiet =
 	prompt ();
 
     try	
-	    let buff = Lexing.from_string (read_line ())
+	    let buff = Lexing.from_string (read_line ()) in
+		let query_term = Parser.query Lexer.token buff in
+		let execute () =
+			interpret query_term database interactive one_shot randomise quiet
 		in
-			interpret (Parser.query Lexer.token buff) database interactive one_shot randomise quiet;
+		let rec execute_many = function
+			| 0 -> ()
+			| n -> 
+				execute ();
+				execute_many (n - 1)
+		in
+			if not one_shot
+			then execute_many 1
+			else execute_many limit
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
             print_endline "Parse error. Did you forget a dot?"
         | Failure s -> print_endline ("Failed: " ^ s) 
 
-let repl database randomise interactive quiet = 
+let repl database randomise interactive quiet limit = 
     try 
 		let rec main_loop_body () =
-			read_eval_print database randomise interactive quiet; (* exception on EOF *)
+			(* exception on EOF *)
+			read_eval_print database randomise interactive quiet limit; 
 			main_loop_body ()
 		in 
 			main_loop_body ()
 	with
 		| End_of_file -> (print_string "\n"; exit 0)
         | _           -> (print_endline "Error occurred."; exit 0)
-			
-(*
- *  main interpreter function.
- *)
+
 let main () =
 	let filenames = ref [] in
 	let randomise = ref false in
 	let interactive = ref true in
 	let quiet = ref false in
+	let limit = ref 0 in
 	let specs = [
 		("-r", Arg.Set randomise, "randomise");
 		("-n", Arg.Clear interactive, "non-interactive");
 		("-q", Arg.Set quiet, "quiet");
+		("-l", Arg.Set_int limit, "limit");
 	]
 	and add_to_filenames = fun s -> filenames := s :: !filenames 
 	in
@@ -94,7 +105,7 @@ let main () =
 		then Random.self_init ()
 		else ();
 
-		repl (read_database !filenames) !randomise !interactive !quiet
+		repl (read_database !filenames) !randomise !interactive !quiet !limit
 
 let _ = 
 	main ()  
