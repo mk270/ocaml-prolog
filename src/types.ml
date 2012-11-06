@@ -67,5 +67,5 @@ and number =
   | Integer of int      (* prolog integers *)
 
 and name = string       (* prolog names *)
-;;
+
 

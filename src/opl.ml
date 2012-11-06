@@ -1,8 +1,8 @@
-open Parser;;
-open Lexer;;
-open Types;;
-open Evaluator;;
-open Shuffle;;
+open Parser
+open Lexer
+open Types
+open Evaluator
+open Shuffle
 
 (* 
  * reading database from input files.
@@ -58,7 +58,7 @@ let read_database params =
                         parameters;
             !database                                           (* return created database *)
     end
-;;
+
 
 
 (*
@@ -87,7 +87,7 @@ let main () =
 		with
 			| End_of_file -> (print_string "\n"; exit 0)
             |      _      -> (print_endline "Error occured."; exit 0)
-;;
+
 
 let _ = 
 	Random.self_init ();

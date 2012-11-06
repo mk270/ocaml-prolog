@@ -1,7 +1,7 @@
-open Types;;
+open Types
 
-exception Unsuported_term;;
-exception Type_error;;
+exception Unsuported_term
+exception Type_error
 
 (* makes a string of term *)
 let string_of_term term =

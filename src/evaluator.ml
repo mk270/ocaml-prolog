@@ -1,9 +1,9 @@
-open Types;;
-open Unificator;;
+open Types
+open Unificator
 
-exception Not_a_number;;
-exception Cant_evaluate;;
-exception Not_integer;;
+exception Not_a_number
+exception Cant_evaluate
+exception Not_integer
 
 let c = ref 0 (* used by get_unique_var *)
 
