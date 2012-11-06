@@ -47,16 +47,12 @@ let read_database params =
 					print_endline (base_filename ^ ": " ^ " Error occurred.");
 					raise e
     in
-    let parameters = match Array.length params with
-        |  1  -> Array.make 0 ""
-        |  i  -> Array.sub params 1 (i - 1)
-    in
 	let process_file filename =
 		if Sys.file_exists filename
         then extend_database filename
         else print_endline ("File " ^ (Filename.basename filename) ^ " does not exist.")
 	in
-        Array.iter process_file parameters;
+        List.iter process_file params;
         !database
 
 let prompt () =
@@ -91,9 +87,19 @@ let repl database =
  *  main interpreter function.
  *)
 let main () =
-
-    let database = read_database Sys.argv
-    in repl database
+	let filenames = ref [] in
+	let randomise = ref false in
+	let interactive = ref true in
+	let quiet = ref false in
+	let specs = [
+		("-r", Arg.Set randomise, "randomise");
+		("-n", Arg.Clear interactive, "non-interactive");
+		("-q", Arg.Set quiet, "quiet");
+	]
+	and add_to_filenames = fun s -> filenames := s :: !filenames 
+	in
+		Arg.parse specs add_to_filenames "Usage: opl filename1 filename2 ...";
+		repl (read_database !filenames)
 
 let _ = 
 	Random.self_init ();
