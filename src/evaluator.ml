@@ -19,28 +19,28 @@ let rec get_variables term list =
 			| t::terms -> get_vars_from_args terms (get_variables t list)
 	in
 		match term with
-			| TermOr(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermAnd(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermVariable v -> if List.exists (fun var -> var = v) list then list else v::list
-			| TermString str -> list
-			| TermConstant const -> list
-			| TermFunctor(nam,args) -> 
-				get_vars_from_args args list
-			| TermIs(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticPlus(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticMinus(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticMult(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticDiv(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticInequality(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticLess(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticGreater(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticLeq(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermArithmeticGeq(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermTermUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermTermNotUnify(t1,t2) -> get_variables t2 (get_variables t1 list)
-			| TermNegation t -> get_variables t list
+			| TermOr(t1,t2)                  
+			| TermAnd(t1,t2)                 
+			| TermIs(t1,t2)                  
+			| TermArithmeticPlus(t1,t2)      
+			| TermArithmeticMinus(t1,t2)     
+			| TermArithmeticMult(t1,t2)      
+			| TermArithmeticDiv(t1,t2)       
+			| TermArithmeticEquality(t1,t2)  
+			| TermArithmeticInequality(t1,t2)
+			| TermArithmeticLess(t1,t2)      
+			| TermArithmeticGreater(t1,t2)   
+			| TermArithmeticLeq(t1,t2)       
+			| TermArithmeticGeq(t1,t2)       
+			| TermTermUnify(t1,t2)           
+			| TermTermNotUnify(t1,t2)        
 			| TermTermEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermVariable v -> 
+				if List.exists (fun var -> var = v) list 
+				then list 
+				else v :: list
+			| TermFunctor(nam,args) -> get_vars_from_args args list
+			| TermNegation t -> get_variables t list
 			| TermList listterm ->
 				(match listterm with
 					| EmptyList -> list
@@ -160,7 +160,7 @@ and evaluate term database rep clauses sc fc cut_c =
 			| TermCut -> sc (true,rep) cut_c
 			| _ -> raise Cant_evaluate
 
-let quiet = false
+let quiet = true
 
 let thunk = fun () -> ()
 
