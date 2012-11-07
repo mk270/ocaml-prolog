@@ -1,5 +1,5 @@
 
-A trivial Prolog interpreter in OCaml.
+A trivial Prolog interpreter in OCaml, originally by Karol Stosiek et al.
 
 This tool optionally provides a *non-deterministic* implementation of
 unification. The motivation for this is to generate dissimilar strings 
