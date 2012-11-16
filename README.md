@@ -1,5 +1,6 @@
 
-A trivial Prolog interpreter in OCaml, originally by Karol Stosiek et al.
+A trivial Prolog interpreter in OCaml, originally by Karol Stosiek and
+Szymon Fogiel.
 
 This tool optionally provides a *non-deterministic* ordering of results of
 evaluation. The motivation for this is to generate dissimilar strings 
