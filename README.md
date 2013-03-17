@@ -2,7 +2,13 @@ OCaml-Prolog
 ============
 
 A trivial Prolog interpreter in OCaml, originally by Karol Stosiek and
-Szymon Fogiel.
+Szymon Fogiel; updated by Martin Keegan.
+
+Derived from an original at: http://code.google.com/p/prologinterp/
+
+Main changes:
+  - remove the floating point data type / arithmetic
+  - factor out conservative syntax in favour of more sugar, less boilerplate
 
 Ludic usage
 -----------
@@ -24,12 +30,6 @@ research on Wikipedia's claims about its phonotactic constraints:
  cultolter
  pallat
 
-
-Derived from an original at: http://code.google.com/p/prologinterp/
-
-Main changes:
-  - remove the floating point data type / arithmetic
-  - factor out conservative syntax in favour of more sugar, less boilerplate
 
 Licensing
 ---------
