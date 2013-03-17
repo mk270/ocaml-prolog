@@ -1,3 +1,5 @@
+OCaml-Prolog
+============
 
 A trivial Prolog interpreter in OCaml, originally by Karol Stosiek and
 Szymon Fogiel.
@@ -25,3 +27,10 @@ Derived from an original at: http://code.google.com/p/prologinterp/
 Main changes:
   - remove the floating point data type / arithmetic
   - factor out conservative syntax in favour of more sugar, less boilerplate
+
+Licensing
+=========
+
+This code is distributed under the terms of the GNU GPL v3
+
+(see claim at: http://code.google.com/p/prologinterp/ )
