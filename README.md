@@ -4,6 +4,9 @@ OCaml-Prolog
 A trivial Prolog interpreter in OCaml, originally by Karol Stosiek and
 Szymon Fogiel.
 
+Ludic usage
+-----------
+
 This tool optionally provides a *non-deterministic* ordering of results of
 evaluation. The motivation for this is to generate dissimilar strings 
 which satisfy a grammar, without all the strings looking practically
@@ -29,7 +32,7 @@ Main changes:
   - factor out conservative syntax in favour of more sugar, less boilerplate
 
 Licensing
-=========
+---------
 
 This code is distributed under the terms of the GNU GPL v3
 
