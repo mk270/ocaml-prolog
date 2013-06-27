@@ -21,8 +21,6 @@ let string_of_term term =
 		| [t] -> (string_of_term t)
 		| t::terms -> (string_of_term t) ^ "," ^ (string_of_arguments terms)
 	and string_of_term = function
-		| TermOr (t1, t2) -> (string_of_term t1) ^ "; " ^ (string_of_term t2)
-		| TermAnd (t1, t2) -> (string_of_term t1) ^ ", " ^ (string_of_term t2)
 		| TermVariable v -> v
 		| TermString str -> str
 		| TermConstant const -> (match const with
@@ -33,6 +31,8 @@ let string_of_term term =
 		| TermFunctor(nam,args) ->
 			nam ^ "(" ^ (string_of_arguments args) ^ ")"
 		| TermIs (t1, t2) -> (string_of_term t1) ^ " is " ^ (string_of_term t2)
+		| TermOr (t1, t2) -> (string_of_term t1) ^ "; " ^ (string_of_term t2)
+		| TermAnd (t1, t2) -> (string_of_term t1) ^ ", " ^ (string_of_term t2)
 		| TermIfThen (t1, t2) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2)
 		| TermIfThenElse (t1, t2,t3) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2) ^ " else " ^ (string_of_term t3)
 		| TermArithmeticPlus (t1, t2) -> (string_of_term t1) ^ " + " ^ (string_of_term t2)
