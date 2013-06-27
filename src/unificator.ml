@@ -30,11 +30,12 @@ let string_of_term term =
 						| Integer n -> string_of_int n))
 		| TermFunctor(nam,args) ->
 			nam ^ "(" ^ (string_of_arguments args) ^ ")"
+		| TermIfThen (t1, t2) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2)
+		| TermIfThenElse (t1, t2,t3) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2) ^ " else " ^ (string_of_term t3)
+		| TermNegation t -> "not " ^ (string_of_term t)
 		| TermIs (t1, t2) -> (string_of_term t1) ^ " is " ^ (string_of_term t2)
 		| TermOr (t1, t2) -> (string_of_term t1) ^ "; " ^ (string_of_term t2)
 		| TermAnd (t1, t2) -> (string_of_term t1) ^ ", " ^ (string_of_term t2)
-		| TermIfThen (t1, t2) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2)
-		| TermIfThenElse (t1, t2,t3) -> "if " ^ (string_of_term t1) ^ " then " ^ (string_of_term t2) ^ " else " ^ (string_of_term t3)
 		| TermArithmeticPlus (t1, t2) -> (string_of_term t1) ^ " + " ^ (string_of_term t2)
 		| TermArithmeticMinus (t1, t2) -> (string_of_term t1) ^ " - " ^ (string_of_term t2)
 		| TermArithmeticMult (t1, t2) -> (string_of_term t1) ^ " * " ^ (string_of_term t2)
@@ -47,7 +48,6 @@ let string_of_term term =
 		| TermArithmeticGeq (t1, t2) -> (string_of_term t1) ^ " >= " ^ (string_of_term t2)
 		| TermTermEquality (t1, t2) -> (string_of_term t1) ^ " == " ^ (string_of_term t2)
 		| TermTermUnify (t1, t2) -> (string_of_term t1) ^ " = " ^ (string_of_term t2)
-		| TermNegation t -> "not " ^ (string_of_term t)
 		| TermTermNotUnify (t1, t2) -> (string_of_term t1) ^ " /= " ^ (string_of_term t2)
 		| TermList list ->
 			(match list with
