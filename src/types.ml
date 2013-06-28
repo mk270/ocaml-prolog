@@ -11,6 +11,9 @@
 
 (* --- Prolog syntax elements constructors --- *)
 
+
+type name = string       (* prolog names *)
+
 type clause =                                   (* database clauses *)
   | ClauseImplication of term * term            (* implication clause *)
   | SingleClause of term                        (* fact clause *)
@@ -75,7 +78,5 @@ and constant =
 
 and number =
   | Integer of int      (* prolog integers *)
-
-and name = string       (* prolog names *)
 
 
