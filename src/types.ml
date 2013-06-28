@@ -14,6 +14,9 @@
 
 type name = string       (* prolog names *)
 
+type number =
+  | Integer of int      (* prolog integers *)
+
 type clause =                                   (* database clauses *)
   | ClauseImplication of term * term            (* implication clause *)
   | SingleClause of term                        (* fact clause *)
@@ -75,8 +78,3 @@ and arguments = term list                (* functor arguments *)
 and constant =  
   | ConstantAtom of name                 (* constants: atom *)
   | ConstantNumber of number             (* constant: number *)
-
-and number =
-  | Integer of int      (* prolog integers *)
-
-
