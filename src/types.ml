@@ -21,11 +21,7 @@ type constant =
   | ConstantAtom of name                 (* constants: atom *)
   | ConstantNumber of number             (* constant: number *)
 
-type clause =                                   (* database clauses *)
-  | ClauseImplication of term * term            (* implication clause *)
-  | SingleClause of term                        (* fact clause *)
-
-and term =                                      (* prolog term types *)
+type term =                                      (* prolog term types *)
   | TermOr of term * term                       (* logical disjunction *)
   | TermAnd of term * term                      (* logical conjuction *)
   | TermString of string                        (* prolog string term *)
@@ -78,3 +74,7 @@ and lists =
   | DividedList of arguments * term
 
 and arguments = term list                (* functor arguments *)
+
+type clause =                                   (* database clauses *)
+  | ClauseImplication of term * term            (* implication clause *)
+  | SingleClause of term                        (* fact clause *)
