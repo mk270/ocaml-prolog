@@ -223,7 +223,7 @@ let interpret term database interactive one_shot randomise quiet =
 	let interact = fun vt fc -> 
 		if fst vt 
 		then (print_yes ();
-			  print_replacement (filter (snd vt)); 
+			  Repr.print_replacement (filter (snd vt)); 
 			  print_endline "";
 			  if more () 
 			  then fc () 
