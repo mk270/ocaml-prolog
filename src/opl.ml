@@ -23,24 +23,23 @@ let load_file f =
   close_in ic;
   (s)
 
+let clauses_from_file filename =                          
+	let base_filename = Filename.basename filename in
+		try
+			load_file filename |>
+			Lexing.from_string |>
+			Parser.clause_list Lexer.token 
+		with 
+			| e -> 
+				print_endline (base_filename ^ ": " ^ " Error occurred.");
+				raise e
+
 (* 
  * reading database from input files.
  * params - program parameters
  *)
 let read_database params = 
-    let clauses_from_file filename =                          
-		let base_filename = Filename.basename filename
-		in
-			try
-					load_file filename |>
-					Lexing.from_string |>
-					Parser.clause_list Lexer.token 
-			with 
-				| e -> 
-					print_endline (base_filename ^ ": " ^ " Error occurred.");
-					raise e
-	in
-        List.map clauses_from_file params |> List.flatten
+    List.map clauses_from_file params |> List.flatten
 
 let prompt () =
 	print_string ":- "; 
