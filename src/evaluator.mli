@@ -18,3 +18,5 @@ type interp_behaviour = {
 }
 
 val interpret : term -> clause list -> interp_behaviour -> unit
+val clauses_from_string : string -> clause list
+val term_from_string : string -> term

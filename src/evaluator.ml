@@ -246,3 +246,9 @@ let interpret term database behaviour =
 	in
 	let database = maybe_shuffle randomise database in
 		evaluate term database [] database interact	print_no thunk randomise
+
+let clauses_from_string s =
+	Lexing.from_string s |> Parser.clause_list Lexer.token 
+
+let term_from_string s =
+	Lexing.from_string s |> Parser.query Lexer.token

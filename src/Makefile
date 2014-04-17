@@ -9,8 +9,6 @@ SOURCES = \
 	unificator.ml \
 	evaluator.mli \
 	evaluator.ml \
-	prolog.mli \
-	prolog.ml \
 	opl.ml
 RESULT = ../bin/opl
 ANNOTATE = true

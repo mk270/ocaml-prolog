@@ -23,7 +23,7 @@ let load_file f =
 let clauses_from_file filename =                          
 	let base_filename = Filename.basename filename in
 		try
-			load_file filename |> Prolog.clauses_from_string
+			load_file filename |> Evaluator.clauses_from_string
 		with 
 			| e -> 
 				print_endline (base_filename ^ ": " ^ " Error occurred.");
@@ -44,7 +44,7 @@ let read_eval_print database behaviour =
 	prompt ();
 
     try	
-		let query_term = read_line () |> Prolog.term_from_string in
+		let query_term = read_line () |> Evaluator.term_from_string in
 		let execute () =
 			Evaluator.interpret query_term database behaviour
 		in
