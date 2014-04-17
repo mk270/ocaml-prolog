@@ -23,9 +23,6 @@ let load_file f =
   close_in ic;
   (s)
 
-
-let slurp_file = load_file
-
 (* 
  * reading database from input files.
  * params - program parameters
@@ -35,7 +32,7 @@ let read_database params =
 		let base_filename = Filename.basename filename
 		in
 			try
-					slurp_file filename |>
+					load_file filename |>
 					Lexing.from_string |>
 					Parser.clause_list Lexer.token 
 			with 
