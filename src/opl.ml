@@ -9,8 +9,8 @@
   (at your option) any later version.
 *)
 
-open Evaluator
 open Shuffle
+open Evaluator
 
 let load_file f =
   let ic = open_in f in
@@ -46,7 +46,7 @@ let read_eval_print database behaviour =
     try	
 		let query_term = read_line () |> Prolog.term_from_string in
 		let execute () =
-			interpret query_term database behaviour
+			Evaluator.interpret query_term database behaviour
 		in
 		let rec execute_many = function
 			| 0 -> ()
