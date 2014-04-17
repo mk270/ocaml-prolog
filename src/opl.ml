@@ -9,7 +9,6 @@
   (at your option) any later version.
 *)
 
-open Shuffle
 open Interpreter
 
 let load_file f =
