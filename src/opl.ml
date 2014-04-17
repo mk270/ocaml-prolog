@@ -28,6 +28,10 @@ let prompt () =
 	print_string ":- "; 
 	flush stdout
 
+let rec repeat thunk = function
+	| 0 -> ()
+	| n -> thunk (); repeat thunk (n - 1)
+
 let read_eval_print database behaviour =
 	prompt ();
 
@@ -36,16 +40,10 @@ let read_eval_print database behaviour =
 		let execute () =
 			Interpreter.interpret query_term database behaviour
 		in
-		let rec execute_many = function
-			| 0 -> ()
-			| n -> 
-				execute ();
-				execute_many (n - 1)
-		in
 			(match behaviour.limit with
 			| None -> 1
 			| Some n -> n) 
-			|> execute_many
+			|> repeat execute
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
