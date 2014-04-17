@@ -31,10 +31,6 @@ let concat_files filenames =
 	List.map load_file filenames |>
     String.concat ""
 
-let read_database params = 
-	concat_files params |>
-    Interpreter.clauses_from_string
-
 let prompt () =
 	print_string ":- "; 
 	flush stdout
@@ -96,7 +92,11 @@ let main () =
 			limit = set_limit !limit;
 		} in
 
-		repl (read_database !filenames) behaviour
+		let database = 
+			concat_files !filenames |> Interpreter.clauses_from_string
+		in
+
+		repl database behaviour
 
 let _ = 
 	main ()  
