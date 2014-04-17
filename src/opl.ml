@@ -15,18 +15,6 @@ open Types
 open Evaluator
 open Shuffle
 
-(* http://pleac.sourceforge.net/pleac_ocaml/filecontents.html *)
-let slurp_channel channel =
-	let buffer_size = 4096 in
-	let buffer = Buffer.create buffer_size in
-	let string = String.create buffer_size in
-	let chars_read = ref 1 in
-		while !chars_read <> 0 do
-			chars_read := input channel string 0 buffer_size;
-			Buffer.add_substring buffer string 0 !chars_read
-		done;
-		Buffer.contents buffer
-
 let load_file f =
   let ic = open_in f in
   let n = in_channel_length ic in
@@ -35,13 +23,6 @@ let load_file f =
   close_in ic;
   (s)
 
-let slurp_file filename =
-	let channel = open_in_bin filename in
-	let result =
-		try slurp_channel channel
-		with e -> close_in channel; raise e in
-		close_in channel;
-		result
 
 let slurp_file = load_file
 
