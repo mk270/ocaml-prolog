@@ -27,9 +27,12 @@ let load_file f =
 		close_in ic;
 		(s)
 
+let concat_files filenames =
+	List.map load_file filenames |>
+    String.concat ""
+
 let read_database params = 
-	List.map load_file params |>
-    String.concat "" |>
+	concat_files params |>
     Interpreter.clauses_from_string
 
 let prompt () =
