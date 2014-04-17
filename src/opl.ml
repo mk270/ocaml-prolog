@@ -40,7 +40,7 @@ let read_database params =
 					print_endline (base_filename ^ ": " ^ " Error occurred.");
 					raise e
 	in
-        List.flatten (List.map clauses_from_file params)
+        List.map clauses_from_file params |> List.flatten
 
 let prompt () =
 	print_string ":- "; 
