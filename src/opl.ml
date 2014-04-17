@@ -40,6 +40,10 @@ let rec repeat thunk = function
 	| 0 -> ()
 	| n -> thunk (); repeat thunk (n - 1)
 
+let rec loop_forever thunk =
+	thunk ();
+	loop_forever thunk
+
 let read_eval_print database behaviour =
 	prompt ();
 
@@ -54,10 +58,6 @@ let read_eval_print database behaviour =
         | Parsing.Parse_error ->             (* parsing failure *)
             print_endline "Parse error. Did you forget a dot?"
         | Failure s -> print_endline ("Failed: " ^ s) 
-
-let rec loop_forever thunk =
-	thunk ();
-	loop_forever thunk
 
 let repl database behaviour = 
     try 
