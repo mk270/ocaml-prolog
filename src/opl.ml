@@ -29,10 +29,6 @@ let clauses_from_file filename =
 				print_endline (base_filename ^ ": " ^ " Error occurred.");
 				raise e
 
-(* 
- * reading database from input files.
- * params - program parameters
- *)
 let read_database params = 
     List.map clauses_from_file params |> List.flatten
 
