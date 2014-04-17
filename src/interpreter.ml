@@ -250,7 +250,9 @@ let interpret database behaviour term =
 		evaluate term database [] database interact	print_no thunk randomise
 
 let clauses_from_string s =
-	Lexing.from_string s |> Parser.clause_list Lexer.token 
+	match (String.length s) with
+	| 0 -> []
+	| _ -> Lexing.from_string s |> Parser.clause_list Lexer.token 
 
 let term_from_string s =
 	Lexing.from_string s |> Parser.query Lexer.token
