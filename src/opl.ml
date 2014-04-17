@@ -11,7 +11,6 @@
 
 open Parser
 open Lexer
-open Types
 open Evaluator
 open Shuffle
 
@@ -49,9 +48,7 @@ let read_eval_print database randomise interactive quiet limit =
 	prompt ();
 
     try	
-		let new_line = read_line () in
-	    let buff = Lexing.from_string new_line in
-		let query_term = Parser.query Lexer.token buff in
+		let query_term = read_line () |> Prolog.term_from_string in
 		let execute () =
 			interpret query_term database interactive one_shot randomise quiet
 		in
