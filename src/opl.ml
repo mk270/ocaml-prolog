@@ -20,17 +20,10 @@ let load_file f =
   close_in ic;
   (s)
 
-let clauses_from_file filename =                          
-	let base_filename = Filename.basename filename in
-		try
-			load_file filename |> Interpreter.clauses_from_string
-		with 
-			| e -> 
-				print_endline (base_filename ^ ": " ^ " Error occurred.");
-				raise e
-
 let read_database params = 
-    List.map clauses_from_file params |> List.flatten
+	List.map load_file params |>
+    String.concat "" |>
+    Interpreter.clauses_from_string
 
 let prompt () =
 	print_string ":- "; 
