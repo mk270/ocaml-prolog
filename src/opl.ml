@@ -11,6 +11,14 @@
 
 open Interpreter
 
+let get_limit = function
+	| None -> 1
+	| Some n -> n
+
+let set_limit = function
+	| 0 -> None
+	| n -> Some n
+
 let load_file f =
   let ic = open_in f in
   let n = in_channel_length ic in
@@ -31,10 +39,6 @@ let prompt () =
 let rec repeat thunk = function
 	| 0 -> ()
 	| n -> thunk (); repeat thunk (n - 1)
-
-let get_limit = function
-	| None -> 1
-	| Some n -> n
 
 let read_eval_print database behaviour =
 	prompt ();
@@ -61,10 +65,6 @@ let repl database behaviour =
 	with
 		| End_of_file -> (print_string "\n"; exit 0)
         | _           -> (print_endline "Error occurred."; exit 0)
-
-let set_limit = function
-	| 0 -> None
-	| n -> Some n
 
 let main () =
 	let filenames = ref [] in
