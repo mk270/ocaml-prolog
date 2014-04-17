@@ -38,7 +38,7 @@ let read_eval_print database behaviour =
     try	
 		let query_term = read_line () |> Interpreter.term_from_string in
 		let execute () =
-			Interpreter.interpret query_term database behaviour
+			Interpreter.interpret database behaviour query_term
 		in
 			(match behaviour.limit with
 			| None -> 1

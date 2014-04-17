@@ -198,7 +198,7 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 		evaluate term database rep clauses sc fc cut_c
 
 (* evaluates all possible ways a term given a specific database *)
-let interpret term database behaviour = 
+let interpret database behaviour term = 
 	let interactive = behaviour.interactive
 	and one_shot = match behaviour.limit with
 		| Some _ -> true
