@@ -26,7 +26,15 @@ let slurp_channel channel =
 			Buffer.add_substring buffer string 0 !chars_read
 		done;
 		Buffer.contents buffer
-			
+
+let load_file f =
+  let ic = open_in f in
+  let n = in_channel_length ic in
+  let s = String.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  (s)
+
 let slurp_file filename =
 	let channel = open_in_bin filename in
 	let result =
@@ -34,6 +42,8 @@ let slurp_file filename =
 		with e -> close_in channel; raise e in
 		close_in channel;
 		result
+
+let slurp_file = load_file
 
 (* 
  * reading database from input files.
@@ -44,9 +54,9 @@ let read_database params =
 		let base_filename = Filename.basename filename
 		in
 			try
-				let buffer = slurp_file filename in
+					slurp_file filename |>
+					Lexing.from_string |>
 					Parser.clause_list Lexer.token 
-									 (Lexing.from_string buffer)
 			with 
 				| e -> 
 					print_endline (base_filename ^ ": " ^ " Error occurred.");
