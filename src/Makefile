@@ -7,8 +7,8 @@ SOURCES = \
 	repr.ml \
 	unificator.mli \
 	unificator.ml \
-	evaluator.mli \
-	evaluator.ml \
+	interpreter.mli \
+	interpreter.ml \
 	opl.ml
 RESULT = ../bin/opl
 ANNOTATE = true
