@@ -10,4 +10,11 @@
 *)
 open Types
 
-val interpret : term -> clause list -> bool -> bool -> bool -> bool -> unit
+type interp_behaviour = {
+	randomise : bool;
+	interactive : bool;
+	quiet : bool;
+	limit : int option;
+}
+
+val interpret : term -> clause list -> interp_behaviour -> unit

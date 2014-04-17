@@ -40,15 +40,13 @@ let prompt () =
 	print_string ":- "; 
 	flush stdout
 
-let read_eval_print database randomise interactive quiet limit =
-	let one_shot = limit > 0 in
-
+let read_eval_print database behaviour =
 	prompt ();
 
     try	
 		let query_term = read_line () |> Prolog.term_from_string in
 		let execute () =
-			interpret query_term database interactive one_shot randomise quiet
+			interpret query_term database behaviour
 		in
 		let rec execute_many = function
 			| 0 -> ()
@@ -56,26 +54,31 @@ let read_eval_print database randomise interactive quiet limit =
 				execute ();
 				execute_many (n - 1)
 		in
-			if not one_shot
-			then execute_many 1
-			else execute_many limit
+			(match behaviour.limit with
+			| None -> 1
+			| Some n -> n) 
+			|> execute_many
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
             print_endline "Parse error. Did you forget a dot?"
         | Failure s -> print_endline ("Failed: " ^ s) 
 
-let repl database randomise interactive quiet limit = 
+let repl database behaviour = 
     try 
 		let rec main_loop_body () =
 			(* exception on EOF *)
-			read_eval_print database randomise interactive quiet limit; 
+			read_eval_print database behaviour; 
 			main_loop_body ()
 		in 
 			main_loop_body ()
 	with
 		| End_of_file -> (print_string "\n"; exit 0)
         | _           -> (print_endline "Error occurred."; exit 0)
+
+let set_limit = function
+	| 0 -> None
+	| n -> Some n
 
 let main () =
 	let filenames = ref [] in
@@ -97,8 +100,14 @@ let main () =
 		then Random.self_init ()
 		else ();
 
-		repl (read_database !filenames) !randomise !interactive !quiet !limit
+		let behaviour = {
+			randomise = !randomise;
+			interactive = !interactive;
+			quiet = !quiet;
+			limit = set_limit !limit;
+		} in
+
+		repl (read_database !filenames) behaviour
 
 let _ = 
 	main ()  
-             

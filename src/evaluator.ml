@@ -12,6 +12,13 @@
 open Types
 open Unificator
 
+type interp_behaviour = {
+	randomise : bool;
+	interactive : bool;
+	quiet : bool;
+	limit : int option;
+}
+
 exception Not_a_number
 exception Cant_evaluate
 exception Not_integer
@@ -191,7 +198,13 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 		evaluate term database rep clauses sc fc cut_c
 
 (* evaluates all possible ways a term given a specific database *)
-let interpret term database interactive one_shot randomise quiet =
+let interpret term database behaviour = 
+	let interactive = behaviour.interactive
+	and one_shot = match behaviour.limit with
+		| Some _ -> true
+		| None -> false
+	and randomise = behaviour.randomise
+	and	quiet = behaviour.quiet in
 	let thunk = fun () -> () 
 	and print_no = fun () -> 
 		if quiet
