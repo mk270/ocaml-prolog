@@ -1,4 +1,17 @@
-SOURCES = types.ml shuffle.ml parser.mly lexer.mll repr.mli repr.ml unificator.mli unificator.ml evaluator.mli evaluator.ml opl.ml
+SOURCES = \
+	types.ml \
+	shuffle.ml \
+	parser.mly \
+	lexer.mll \
+	repr.mli \
+	repr.ml \
+	unificator.mli \
+	unificator.ml \
+	evaluator.mli \
+	evaluator.ml \
+	prolog.mli \
+	prolog.ml \
+	opl.ml
 RESULT = ../bin/opl
 ANNOTATE = true
 -include OCamlMakefile

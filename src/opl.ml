@@ -23,13 +23,10 @@ let load_file f =
   close_in ic;
   (s)
 
-let clauses_from_string s =
-	Lexing.from_string s |> Parser.clause_list Lexer.token 
-
 let clauses_from_file filename =                          
 	let base_filename = Filename.basename filename in
 		try
-			load_file filename |> clauses_from_string
+			load_file filename |> Prolog.clauses_from_string
 		with 
 			| e -> 
 				print_endline (base_filename ^ ": " ^ " Error occurred.");
