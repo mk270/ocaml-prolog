@@ -19,6 +19,8 @@ type interp_behaviour = {
 	limit : int option;
 }
 
+type database = clause list
+
 exception Not_a_number
 exception Cant_evaluate
 exception Not_integer

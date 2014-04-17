@@ -17,6 +17,8 @@ type interp_behaviour = {
 	limit : int option;
 }
 
-val interpret : clause list -> interp_behaviour -> term -> unit
-val clauses_from_string : string -> clause list
+type database
+
+val interpret : database -> interp_behaviour -> term -> unit
+val clauses_from_string : string -> database
 val term_from_string : string -> term
