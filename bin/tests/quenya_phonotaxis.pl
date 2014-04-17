@@ -1,3 +1,5 @@
+% -*- prolog -*-
+
 % DCG for Quenya phonotaxis
 
 % vowel length rules
