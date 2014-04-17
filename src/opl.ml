@@ -32,6 +32,10 @@ let rec repeat thunk = function
 	| 0 -> ()
 	| n -> thunk (); repeat thunk (n - 1)
 
+let get_limit = function
+	| None -> 1
+	| Some n -> n
+
 let read_eval_print database behaviour =
 	prompt ();
 
@@ -40,10 +44,7 @@ let read_eval_print database behaviour =
 		let execute () =
 			Interpreter.interpret database behaviour query_term
 		in
-			(match behaviour.limit with
-			| None -> 1
-			| Some n -> n) 
-			|> repeat execute
+			get_limit behaviour.limit |> repeat execute
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
