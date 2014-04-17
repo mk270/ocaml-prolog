@@ -9,8 +9,6 @@
   (at your option) any later version.
 *)
 
-open Parser
-open Lexer
 open Evaluator
 open Shuffle
 
