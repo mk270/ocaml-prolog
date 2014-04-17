@@ -49,7 +49,8 @@ let read_eval_print database randomise interactive quiet limit =
 	prompt ();
 
     try	
-	    let buff = Lexing.from_string (read_line ()) in
+		let new_line = read_line () in
+	    let buff = Lexing.from_string new_line in
 		let query_term = Parser.query Lexer.token buff in
 		let execute () =
 			interpret query_term database interactive one_shot randomise quiet
