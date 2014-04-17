@@ -53,13 +53,13 @@ let read_eval_print database behaviour =
             print_endline "Parse error. Did you forget a dot?"
         | Failure s -> print_endline ("Failed: " ^ s) 
 
-let rec main_loop_body database behaviour =
-	read_eval_print database behaviour;
-	main_loop_body database behaviour
+let rec loop_forever thunk =
+	thunk ();
+	loop_forever thunk
 
 let repl database behaviour = 
     try 
-		main_loop_body database behaviour
+		loop_forever (fun () -> read_eval_print database behaviour)
 	with
 		| End_of_file -> (print_string "\n"; exit 0)
         | _           -> (print_endline "Error occurred."; exit 0)
