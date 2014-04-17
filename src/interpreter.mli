@@ -19,6 +19,7 @@ type interp_behaviour = {
 
 type database
 
-val interpret : database -> interp_behaviour -> term -> unit
+(* val interpret : database -> interp_behaviour -> term -> unit *)
+val interpret_string : database -> interp_behaviour -> string -> unit
 val clauses_from_string : string -> database
-val term_from_string : string -> term
+(* val term_from_string : string -> term *)

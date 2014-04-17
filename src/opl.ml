@@ -47,9 +47,9 @@ let read_eval_print database behaviour =
 	prompt ();
 
     try	
-		let query_term = read_line () |> Interpreter.term_from_string in
+		let query = read_line () in
 		let execute () =
-			Interpreter.interpret database behaviour query_term
+			Interpreter.interpret_string database behaviour query
 		in
 			get_limit behaviour.limit |> repeat execute
     with

@@ -254,3 +254,6 @@ let clauses_from_string s =
 
 let term_from_string s =
 	Lexing.from_string s |> Parser.query Lexer.token
+
+let interpret_string database behaviour s =
+	term_from_string s |> interpret database behaviour
