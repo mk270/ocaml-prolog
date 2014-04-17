@@ -25,7 +25,7 @@ let load_file f =
 	let s = String.create n in
 		really_input ic s 0 n;
 		close_in ic;
-		(s)
+		s
 
 let concat_files filenames =
 	List.map load_file filenames |>
