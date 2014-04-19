@@ -28,8 +28,9 @@ exception Not_integer
 let c = ref 0 (* used by get_unique_var *)
 
 (* gets unique variable *)
-let get_unique_var() =
-    (c := !c+1; "___UNIQUE_VAR"^(string_of_int !c))
+let get_unique_var () =
+    c := !c+1; 
+	"_Var" ^ (string_of_int !c)
 
 (* gets list of variables in term *)
 let rec get_variables term list =
