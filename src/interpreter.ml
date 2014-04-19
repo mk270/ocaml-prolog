@@ -25,12 +25,15 @@ exception Not_a_number
 exception Cant_evaluate
 exception Not_integer
 
-let c = ref 0 (* used by get_unique_var *)
+module Var : sig
+	val get_unique : unit -> string
+end = struct
+	let c = ref 0 (* used by get_unique_var *)
 
-(* gets unique variable *)
-let get_unique_var () =
-    c := !c+1; 
-	"_Var" ^ (string_of_int !c)
+	let get_unique () =
+		c := !c+1; 
+		"_Var" ^ (string_of_int !c)
+end
 
 (* gets list of variables in term *)
 let rec get_variables term list =
@@ -69,7 +72,7 @@ let rec get_variables term list =
 					| DividedList (args,term) -> get_variables term (get_vars_from_args args list))
 			| _ -> list
 
-let map_uniques = List.map (fun var -> (var, TermVariable (get_unique_var ())))
+let map_uniques = List.map (fun var -> (var, TermVariable (Var.get_unique ())))
 
 (* makes variables in clause unique *)
 let make_unique = function
