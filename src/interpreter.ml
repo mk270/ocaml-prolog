@@ -107,6 +107,11 @@ rep is a replacement
 clauses is a list of clauses from database that haven't beed checked yet
 cont is a continuation *)
 
+(* 
+sc: success callback
+fc: failure callback
+*)
+
 let evaluate term database rep clauses sc fc cut_c randomise =
 	let maybe_shuffle = maybe_shuffle randomise in
 
@@ -142,7 +147,6 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					let clauses' = maybe_shuffle clauses''
 					in
 						eval_clause clauses' (make_unique dclause)
-							
 							
 (* evaluates terms *)
 	and evaluate term database rep clauses sc fc cut_c =
