@@ -5,8 +5,8 @@ SOURCES = \
 	lexer.mll \
 	repr.mli \
 	repr.ml \
-	unificator.mli \
-	unificator.ml \
+	unification.mli \
+	unification.ml \
 	interpreter.mli \
 	interpreter.ml \
 	opl.ml

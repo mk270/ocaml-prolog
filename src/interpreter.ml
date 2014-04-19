@@ -10,7 +10,7 @@
 *)
 
 open Types
-open Unificator
+open Unification
 
 type interp_behaviour = {
 	randomise : bool;
