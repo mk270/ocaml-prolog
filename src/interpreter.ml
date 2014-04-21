@@ -136,7 +136,8 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					if fst uni 
 					then evaluate condition database (snd uni) database 
 						(fun vt fc' -> sc vt fc') 
-						(fun () -> functor_eval term database rep clauses' sc fc cut_c) 
+						(fun () -> 
+						 functor_eval term database rep clauses' sc fc cut_c) 
 						fc
 					else functor_eval term database rep clauses' sc fc cut_c
 		in
