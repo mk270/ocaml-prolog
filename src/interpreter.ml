@@ -70,8 +70,7 @@ let map_uniques = List.map (fun var -> (var, TermVariable (Var.get_unique ())))
 (* makes variables in clause unique *)
 let make_unique = function
 	| SingleClause term -> 
-		SingleClause (replace term 
-						  (map_uniques (get_variables term [])))
+		SingleClause (get_variables term [] |> map_uniques |> replace term)
 	| ClauseImplication (term1, term2) ->
 		let replacement = map_uniques (get_variables term2 (get_variables term1 [])) in
 			ClauseImplication (replace term1 replacement,
