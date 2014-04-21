@@ -22,9 +22,6 @@ type interp_behaviour = {
 
 type database = clause list
 
-exception Not_integer
-
-
 (* evaluates all possible ways a term given a specific database *)
 let interpret database behaviour term = 
 	let interactive = behaviour.interactive
