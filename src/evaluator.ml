@@ -31,7 +31,7 @@ let rec get_variables term list =
 			| TermTermUnify (t1, t2)           
 			| TermTermNotUnify (t1, t2)        
 			| TermTermEquality (t1, t2) -> 
-				get_variables t2 (get_variables t1 list)
+				list |> get_variables t1 |> get_variables t2
 			| TermVariable v -> 
 				if List.exists (fun var -> var = v) list 
 				then list 
