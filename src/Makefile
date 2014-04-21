@@ -7,6 +7,7 @@ SOURCES = \
 	repr.ml \
 	unification.mli \
 	unification.ml \
+	limit.ml \
 	interpreter.mli \
 	interpreter.ml \
 	opl.ml

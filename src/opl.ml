@@ -10,14 +10,7 @@
 *)
 
 open Interpreter
-
-let get_limit = function
-	| None -> 1
-	| Some n -> n
-
-let set_limit = function
-	| 0 -> None
-	| n -> Some n
+open Limit
 
 let load_file f =
 	let ic = open_in f in
