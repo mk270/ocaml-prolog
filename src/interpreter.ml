@@ -79,18 +79,18 @@ let make_unique = function
 							   replace term2 replacement)
 
 (* evaluates arithmetic expression *)
-let rec apply_arithmetic_operator t1 t2 f =
-	let n1 = arithmetic_eval t1
-	and n2 = arithmetic_eval t2
+let rec apply_arith_operator t1 t2 f =
+	let n1 = arith_eval t1
+	and n2 = arith_eval t2
 		in match n1, n2 with
 			| Integer i1, Integer i2 -> Integer (f i1 i2)
-and arithmetic_eval = function
+and arith_eval = function
 	| TermConstant (ConstantNumber n) -> n
 	| TermConstant _ -> raise Not_a_number
-	| TermArithmeticPlus(t1,t2)  -> apply_arithmetic_operator t1 t2 (+)
-	| TermArithmeticMinus(t1,t2) -> apply_arithmetic_operator t1 t2 (-)
-	| TermArithmeticMult(t1,t2)  -> apply_arithmetic_operator t1 t2 ( * )
-	| TermArithmeticDiv(t1,t2)   -> apply_arithmetic_operator t1 t2 (/)
+	| TermArithmeticPlus(t1,t2)  -> apply_arith_operator t1 t2 (+)
+	| TermArithmeticMinus(t1,t2) -> apply_arith_operator t1 t2 (-)
+	| TermArithmeticMult(t1,t2)  -> apply_arith_operator t1 t2 ( * )
+	| TermArithmeticDiv(t1,t2)   -> apply_arith_operator t1 t2 (/)
 	| _ -> raise Not_a_number
 			
 let maybe_shuffle randomise clauses = 
@@ -152,15 +152,15 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 							
 (* evaluates terms *)
 	and evaluate term database rep clauses sc fc cut_c =
-		let arithmetic_comparison t1 t2 f =
-			let n1 = arithmetic_eval t1
-			and n2 = arithmetic_eval t2
+		let arith_comparison t1 t2 f =
+			let n1 = arith_eval t1
+			and n2 = arith_eval t2
 			in
 				(match n1, n2 with
 					| Integer i1, Integer i2 -> sc ((f i1 i2), rep) fc)
-		and arithmetic_equality t1 t2 flag =
-			let n1 = arithmetic_eval t1
-			and n2 = arithmetic_eval t2
+		and arith_equality t1 t2 flag =
+			let n1 = arith_eval t1
+			and n2 = arith_eval t2
 			in
 				if (n1 = n2) = flag
 				then sc (true, rep) fc
@@ -174,18 +174,18 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 				| TermTermNotUnify(term1,term2) -> 
 					let uni = unify term1 term2 rep in
 						sc (not (fst uni), snd uni) fc
-				| TermArithmeticEquality(t1,t2) -> arithmetic_equality t1 t2 true
-				| TermArithmeticInequality(t1,t2) -> arithmetic_equality t1 t2 false
-				| TermArithmeticLess(t1,t2) -> arithmetic_comparison t1 t2 (<)
-				| TermArithmeticGreater(t1,t2) -> arithmetic_comparison t1 t2 (>)
-				| TermArithmeticLeq(t1,t2) -> arithmetic_comparison t1 t2 (<=)
-				| TermArithmeticGeq(t1,t2) -> arithmetic_comparison t1 t2 (>=)
+				| TermArithmeticEquality(t1,t2) -> arith_equality t1 t2 true
+				| TermArithmeticInequality(t1,t2) -> arith_equality t1 t2 false
+				| TermArithmeticLess(t1,t2) -> arith_comparison t1 t2 (<)
+				| TermArithmeticGreater(t1,t2) -> arith_comparison t1 t2 (>)
+				| TermArithmeticLeq(t1,t2) -> arith_comparison t1 t2 (<=)
+				| TermArithmeticGeq(t1,t2) -> arith_comparison t1 t2 (>=)
 				| TermNegation t ->
 					evaluate t database rep clauses
 						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
 				| TermTermEquality(t1,t2) -> sc (t1 = t2,rep) fc
 				| TermIs(t1,t2) -> 
-					let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
+					let n2 = TermConstant (ConstantNumber (arith_eval t2))
 					in
 						sc (unify t1 n2 []) fc
 				| TermFunctor(nam,args) -> 
