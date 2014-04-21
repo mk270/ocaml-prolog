@@ -11,7 +11,8 @@ let rec get_variables term list =
 	let rec get_vars_from_args args list = (* gets variables from arguments *)
 		match args with
 			| [] -> list
-			| t::terms -> get_vars_from_args terms (get_variables t list)
+			| t :: terms -> 
+				list |> get_variables t |> get_vars_from_args terms
 	in
 		match term with
 			| TermOr(t1,t2)                  
