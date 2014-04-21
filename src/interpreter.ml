@@ -210,9 +210,7 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 (* evaluates all possible ways a term given a specific database *)
 let interpret database behaviour term = 
 	let interactive = behaviour.interactive
-	and one_shot = match behaviour.limit with
-		| Some _ -> true
-		| None -> false
+	and one_shot = Limit.bool_of behaviour.limit
 	and randomise = behaviour.randomise
 	and	quiet = behaviour.quiet in
 	let thunk = fun () -> () 
