@@ -195,8 +195,7 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 						(fun vt1 fc1 ->
 							if fst vt1 then
 								evaluate t2 database (snd vt1) clauses
-									(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c (* if first term returns true in evaluation 
-																			 then the other one will be tried to be evaluated *)
+									(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c 
 							else sc (false,[]) fc1) fc cut_c
 				| TermOr(t1,t2) -> evaluate t1 database rep clauses
 					(fun vt fc' -> sc vt fc')
