@@ -36,12 +36,12 @@ let rec get_variables term list =
 				if List.exists (fun var -> var = v) list 
 				then list 
 				else v :: list
-			| TermFunctor(nam,args) -> get_vars_from_args args list
+			| TermFunctor (nam, args) -> get_vars_from_args args list
 			| TermNegation t -> get_variables t list
 			| TermList listterm -> listterm |> (function
 				| EmptyList -> list
 				| NormalList args -> get_vars_from_args args list
-				| DividedList (args,term) -> 
+				| DividedList (args, term) -> 
 					list |> get_vars_from_args args |> get_variables term)
 			| _ -> list
 
