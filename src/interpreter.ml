@@ -199,7 +199,8 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 							else sc (false,[]) fc1) fc cut_c
 				| TermOr(t1,t2) -> evaluate t1 database rep clauses
 					(fun vt fc' -> sc vt fc')
-					(fun () -> evaluate t2 database rep clauses sc fc cut_c) cut_c (* evaluate first term *)
+					(fun () -> 
+						evaluate t2 database rep clauses sc fc cut_c) cut_c
 				| TermCut -> sc (true,rep) cut_c
 				| _ -> raise Cant_evaluate
 	in
