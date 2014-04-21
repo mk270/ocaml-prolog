@@ -72,7 +72,9 @@ let make_unique = function
 	| SingleClause term -> 
 		SingleClause (get_variables term [] |> map_uniques |> replace term)
 	| ClauseImplication (term1, term2) ->
-		let replacement = map_uniques (get_variables term2 (get_variables term1 [])) in
+		let replacement = 
+			get_variables term1 [] |> get_variables term2 |> map_uniques
+		in
 			ClauseImplication (replace term1 replacement,
 							   replace term2 replacement)
 
@@ -118,12 +120,13 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 			(* found a fact in database *)
 				let uni = (unify term dterm rep)
 				in
-					if fst uni 
-					then sc uni (fun() -> functor_eval term database rep clauses' sc fc cut_c) 
 				(* term unifies with fact in database, 
 				   so store rest of possible calculations 
 				   and return result of unification *)
 				(* otherwise, it didn't unify => try another possibilities *)
+					if fst uni 
+					then sc uni (fun() -> 
+						 functor_eval term database rep clauses' sc fc cut_c) 
 					else functor_eval term database rep clauses' sc fc cut_c 
 			| ClauseImplication (dterm, condition) ->
 			(* found an implication in database, 
