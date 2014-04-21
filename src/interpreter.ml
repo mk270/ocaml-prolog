@@ -188,7 +188,8 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					let n2 = TermConstant (ConstantNumber (arithmetic_eval t2))
 					in
 						sc (unify t1 n2 []) fc
-				| TermFunctor(nam,args) -> functor_eval repterm database rep clauses sc fc cut_c
+				| TermFunctor(nam,args) -> 
+					functor_eval repterm database rep clauses sc fc cut_c
 				| TermAnd(t1,t2) -> 
 					evaluate t1 database rep clauses (* evaluate first term *)
 						(fun vt1 fc1 ->
