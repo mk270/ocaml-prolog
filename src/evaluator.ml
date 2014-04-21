@@ -42,7 +42,7 @@ let rec get_variables term list =
 				| EmptyList -> list
 				| NormalList args -> get_vars_from_args args list
 				| DividedList (args,term) -> 
-					get_variables term (get_vars_from_args args list))
+					list |> get_vars_from_args args |> get_variables term)
 			| _ -> list
 
 let map_uniques = List.map (fun var -> (var, TermVariable (Var.get_unique ())))
