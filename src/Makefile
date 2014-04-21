@@ -10,6 +10,8 @@ SOURCES = \
 	limit.ml \
 	var.mli \
 	var.ml \
+	evaluator.mli \
+	evaluator.ml \
 	interpreter.mli \
 	interpreter.ml \
 	opl.ml
