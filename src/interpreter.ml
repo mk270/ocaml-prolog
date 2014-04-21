@@ -142,7 +142,9 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					else functor_eval term database rep clauses' sc fc cut_c
 		in
 			match clauses with
-				| [] -> sc (false,[]) fc (* no more facts or implications in database *)
+				| [] -> 
+					(* no more facts or implications in database *)
+					sc (false,[]) fc 
 				| dclause :: clauses'' ->
 					let clauses' = maybe_shuffle clauses''
 					in
@@ -165,7 +167,7 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 				else sc (false, []) fc
 		in
 
-		let repterm = replace term rep             (* apply replacement to the term *)
+		let repterm = replace term rep (* apply replacement to the term *)
 		in
 			match repterm with
 				| TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
