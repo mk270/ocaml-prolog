@@ -8,6 +8,8 @@ SOURCES = \
 	unification.mli \
 	unification.ml \
 	limit.ml \
+	var.mli \
+	var.ml \
 	interpreter.mli \
 	interpreter.ml \
 	opl.ml

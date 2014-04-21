@@ -11,6 +11,7 @@
 
 open Types
 open Unification
+open Var
 
 type interp_behaviour = {
 	randomise : bool;
@@ -24,16 +25,6 @@ type database = clause list
 exception Not_a_number
 exception Cant_evaluate
 exception Not_integer
-
-module Var : sig
-	val get_unique : unit -> string
-end = struct
-	let c = ref 0 (* used by get_unique_var *)
-
-	let get_unique () =
-		c := !c+1; 
-		"_Var" ^ (string_of_int !c)
-end
 
 (* gets list of variables in term *)
 let rec get_variables term list =
