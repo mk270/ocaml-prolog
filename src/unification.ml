@@ -55,9 +55,11 @@ let rec replace term replacement =
 (* adds new variable replacement to given replacement *)
 let rec add_replacement (var, term) replacement =
 	let replace_rep (var', term') =
-		(var', replace term' [(var, term)])   (* replaces variable var if it is in the replacement *)
+		(* replaces variable var if it is in the replacement *)
+		(var', replace term' [(var, term)])   
 	in
-		(var, term) :: (List.map replace_rep replacement) (* replaces var in every node of replacement *)
+		(* replaces var in every node of replacement *)
+		(var, term) :: (List.map replace_rep replacement)
     
 let fail_unify = (false, [])
 
