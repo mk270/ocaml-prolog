@@ -45,11 +45,10 @@ let rec replace term replacement =
 		  | TermTermUnify (t1,t2) -> TermTermUnify (replace t1 replacement, replace t2 replacement)
 		  | TermTermNotUnify (t1,t2) -> TermTermNotUnify (replace t1 replacement, replace t2 replacement)
 		  | TermNegation t -> TermNegation (replace t replacement)
-		  | TermList list ->
-			  (match list with
-				  | EmptyList -> term
-				  | NormalList args -> TermList (NormalList (List.map rep args))
-				  | DividedList(args,term) -> TermList (DividedList (List.map rep args, rep term)))
+		  | TermList list -> list |> (function
+			  | EmptyList -> term
+			  | NormalList args -> TermList (NormalList (List.map rep args))
+			  | DividedList(args,term) -> TermList (DividedList (List.map rep args, rep term)))
 		  | _ -> term
 
 
