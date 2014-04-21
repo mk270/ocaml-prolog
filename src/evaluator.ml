@@ -38,12 +38,11 @@ let rec get_variables term list =
 				else v :: list
 			| TermFunctor(nam,args) -> get_vars_from_args args list
 			| TermNegation t -> get_variables t list
-			| TermList listterm ->
-				(match listterm with
-					| EmptyList -> list
-					| NormalList args -> get_vars_from_args args list
-					| DividedList (args,term) -> 
-						get_variables term (get_vars_from_args args list))
+			| TermList listterm -> listterm |> (function
+				| EmptyList -> list
+				| NormalList args -> get_vars_from_args args list
+				| DividedList (args,term) -> 
+					get_variables term (get_vars_from_args args list))
 			| _ -> list
 
 let map_uniques = List.map (fun var -> (var, TermVariable (Var.get_unique ())))
