@@ -49,7 +49,8 @@ let rec get_variables term list =
 			| TermArithmeticGeq(t1,t2)       
 			| TermTermUnify(t1,t2)           
 			| TermTermNotUnify(t1,t2)        
-			| TermTermEquality(t1,t2) -> get_variables t2 (get_variables t1 list)
+			| TermTermEquality(t1,t2) -> 
+				get_variables t2 (get_variables t1 list)
 			| TermVariable v -> 
 				if List.exists (fun var -> var = v) list 
 				then list 
@@ -60,7 +61,8 @@ let rec get_variables term list =
 				(match listterm with
 					| EmptyList -> list
 					| NormalList args -> get_vars_from_args args list
-					| DividedList (args,term) -> get_variables term (get_vars_from_args args list))
+					| DividedList (args,term) -> 
+						get_variables term (get_vars_from_args args list))
 			| _ -> list
 
 let map_uniques = List.map (fun var -> (var, TermVariable (Var.get_unique ())))
