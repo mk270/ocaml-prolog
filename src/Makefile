@@ -20,3 +20,6 @@ SOURCES = \
 RESULT = ../bin/opl
 ANNOTATE = true
 -include OCamlMakefile
+
+clean::
+	rm -f -- *~ *.annot
