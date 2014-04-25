@@ -20,8 +20,6 @@ let rec replace term replacement =
       replace term' replacement
   in
 	  match term with
-		  | TermOr (t1,t2) -> TermOr (replace t1 replacement, replace t2 replacement)
-		  | TermAnd (t1,t2) -> TermAnd (replace t1 replacement, replace t2 replacement)
 		  | TermVariable var ->
 			  (match replacement with
 				  | [] -> term
@@ -30,20 +28,8 @@ let rec replace term replacement =
 					  then rep   (* found current variable var in replacement *)
 					  else replace term replacement') (* continues searching for variable *)
 		  | TermFunctor (nam,args) -> TermFunctor (nam,List.map rep args)
-		  | TermIs (t1,t2) -> TermIs (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticPlus (t1,t2) -> TermArithmeticPlus (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticMinus (t1,t2) -> TermArithmeticMinus (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticMult (t1,t2) -> TermArithmeticMult (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticDiv (t1,t2) -> TermArithmeticDiv (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticEquality (t1,t2) -> TermArithmeticEquality (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticInequality (t1,t2) -> TermArithmeticInequality (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticLess (t1,t2) -> TermArithmeticLess (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticGreater (t1,t2) -> TermArithmeticGreater (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticLeq (t1,t2) -> TermArithmeticLeq (replace t1 replacement, replace t2 replacement)
-		  | TermArithmeticGeq (t1,t2) -> TermArithmeticGeq (replace t1 replacement, replace t2 replacement)
-		  | TermTermEquality (t1,t2) -> TermTermEquality (replace t1 replacement, replace t2 replacement)
-		  | TermTermUnify (t1,t2) -> TermTermUnify (replace t1 replacement, replace t2 replacement)
-		  | TermTermNotUnify (t1,t2) -> TermTermNotUnify (replace t1 replacement, replace t2 replacement)
+		  | TermBinOp (op, t1, t2) ->
+			  TermBinOp (op, replace t1 replacement, replace t2 replacement)
 		  | TermNegation t -> TermNegation (replace t replacement)
 		  | TermList list -> list |> (function
 			  | EmptyList -> term
@@ -107,26 +93,12 @@ let rec unify term1 term2 rep =
 
 	and unify_rterm2 rterm1 rterm2 = match rterm2, rterm1 with
 		| TermVariable v2, _ -> (true,(add_replacement (v2,rterm1) rep))
-		| TermAnd (t21, t22), TermAnd (t11, t12) 
-		| TermOr (t21, t22), TermOr (t11, t12)
-		| TermIs (t21, t22), TermIs (t11, t12)
-		| TermArithmeticPlus (t21, t22), TermArithmeticPlus (t11, t12)
-		| TermArithmeticMinus (t21, t22), TermArithmeticMinus (t11, t12)
-		| TermArithmeticMult (t21, t22), TermArithmeticMult (t11, t12)
-		| TermArithmeticDiv (t21, t22), TermArithmeticDiv (t11, t12)
-		| TermArithmeticEquality (t21, t22), TermArithmeticEquality (t11, t12)
-		| TermArithmeticInequality (t21, t22), TermArithmeticInequality (t11, t12)
-		| TermArithmeticLess (t21, t22), TermArithmeticLess (t11, t12)
-		| TermArithmeticGreater (t21, t22), TermArithmeticGreater (t11, t12)
-		| TermArithmeticLeq (t21, t22), TermArithmeticLeq (t11, t12)
-		| TermArithmeticGeq (t21, t22), TermArithmeticGeq (t11, t12)
-		| TermTermEquality (t21, t22), TermTermEquality (t11, t12)
-		| TermTermUnify (t21, t22), TermTermUnify (t11, t12)
-		| TermTermNotUnify (t21, t22), TermTermNotUnify (t11, t12) ->
+		| TermBinOp (op1, t21, t22), TermBinOp (op2, t11, t12) when op1 = op2 ->
 					let uni1 = unify t11 t21 rep in
 						if fst uni1
 						then unify t12 t22 (snd uni1)
 						else fail_unify
+
 		| TermNegation t2, TermNegation t1 -> unify t1 t2 rep
 		| TermFunctor(nam2,args2), TermFunctor(nam1, args1) ->
 					if nam1 = nam2 && (List.length args1) = (List.length args2)
@@ -164,22 +136,7 @@ let rec unify term1 term2 rep =
 							if fst uni
 							then unify (TermList (DividedList (args1'', term1))) term2 (snd uni)
 							else fail_unify
-		| TermAnd _, _
-		| TermOr _, _
-		| TermIs _, _
-		| TermArithmeticPlus _, _
-		| TermArithmeticMinus _, _
-		| TermArithmeticMult _, _
-		| TermArithmeticDiv _, _
-		| TermArithmeticEquality _, _
-		| TermArithmeticInequality _, _
-		| TermArithmeticLess _, _
-		| TermArithmeticGreater _, _
-		| TermArithmeticLeq _, _
-		| TermArithmeticGeq _, _
-		| TermTermEquality _, _
-		| TermTermUnify _, _
-		| TermTermNotUnify _, _
+		| TermBinOp _, _
 		| TermNegation _, _
 		| TermFunctor _, _
 		| TermList _, _ -> fail_unify

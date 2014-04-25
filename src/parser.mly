@@ -104,11 +104,11 @@ head:
 body:
     | goal SEMICOLON body 
     { 
-        Types.TermOr ($1, $3)
+        Types.TermBinOp (Types.TermOr, $1, $3)
     }
     | goal COMMA body 
     { 
-        Types.TermAnd ($1, $3) 
+        Types.TermBinOp (Types.TermAnd, $1, $3) 
     }
     | goal 
     { 
@@ -171,23 +171,23 @@ term4:
 term5:
     | term5 ARITH_EQ term5
     {
-        Types.TermArithmeticEquality ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticEquality, $1, $3)
     }
     | term5 ARITH_INEQ term5
     {
-        Types.TermArithmeticInequality ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticInequality, $1, $3)
     }
     | term5 TERM_UNIFY term5
     {
-        Types.TermTermUnify ($1, $3)
+        Types.TermBinOp (Types.TermTermUnify, $1, $3)
     }
     | term5 TERM_NOTUNIFY term5
     {
-        Types.TermTermNotUnify ($1, $3)
+        Types.TermBinOp (Types.TermTermNotUnify, $1, $3)
     }
     | term5 TERM_EQ term5 
     {
-        Types.TermTermEquality ($1, $3)
+        Types.TermBinOp (Types.TermTermEquality, $1, $3)
     }
     | term5 TERM_INEQ term5
     {
@@ -195,7 +195,7 @@ term5:
     }
     | term5 IS term5 
     {
-        Types.TermIs ($1, $3) 
+        Types.TermBinOp (Types.TermIs, $1, $3) 
     }
     | term5 TERM_DECOMP term5
     {
@@ -203,19 +203,19 @@ term5:
     } 
     | term5 ARITH_GEQ term5 
     {
-        Types.TermArithmeticGeq ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticGeq, $1, $3)
     }
     | term5 ARITH_LEQ term5 
     {
-        Types.TermArithmeticLeq ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticLeq, $1, $3)
     }
     | term5 ARITH_LESS term5
     {
-        Types.TermArithmeticLess ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticLess, $1, $3)
     }
     | term5 ARITH_GREATER term5
     {
-        Types.TermArithmeticGreater ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticGreater, $1, $3)
     }
     | term5 TERM_ORDER_EQ term5
     {
@@ -258,11 +258,11 @@ term6:
 term7:
     | term7 PLUS term7
     {
-        Types.TermArithmeticPlus ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticPlus, $1, $3)
     }
     | term7 MINUS term7
     {
-        Types.TermArithmeticMinus ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticMinus, $1, $3)
     } 
     | term8 { $1 }
 ;
@@ -270,11 +270,11 @@ term7:
 term8:
     | term8 DIV term8
     {
-        Types.TermArithmeticDiv ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticDiv, $1, $3)
     }
     | term8 MULT term8
     {
-        Types.TermArithmeticMult ($1, $3)
+        Types.TermBinOp (Types.TermArithmeticMult, $1, $3)
     }
     | VAR_INSTANTIATED term8
     {

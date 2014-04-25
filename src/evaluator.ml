@@ -15,22 +15,7 @@ let rec get_variables term list =
 				list |> get_variables t |> get_vars_from_args terms
 	in
 		match term with
-			| TermOr (t1, t2)                  
-			| TermAnd (t1, t2)                 
-			| TermIs (t1, t2)                  
-			| TermArithmeticPlus (t1, t2)      
-			| TermArithmeticMinus (t1, t2)     
-			| TermArithmeticMult (t1, t2)      
-			| TermArithmeticDiv (t1, t2)       
-			| TermArithmeticEquality (t1, t2)  
-			| TermArithmeticInequality (t1, t2)
-			| TermArithmeticLess (t1, t2)      
-			| TermArithmeticGreater (t1, t2)   
-			| TermArithmeticLeq (t1, t2)       
-			| TermArithmeticGeq (t1, t2)       
-			| TermTermUnify (t1, t2)           
-			| TermTermNotUnify (t1, t2)        
-			| TermTermEquality (t1, t2) -> 
+            | TermBinOp (op, t1, t2) ->
 				list |> get_variables t1 |> get_variables t2
 			| TermVariable v ->  (* is this in List.??? *)
 				if List.exists (fun var -> var = v) list 
@@ -58,6 +43,13 @@ let make_unique = function
 			ClauseImplication (replace term1 replacement,
 							   replace term2 replacement)
 
+let function_of_operation = function
+	| TermArithmeticPlus -> (+)
+	| TermArithmeticMinus -> (-)
+	| TermArithmeticMult -> ( * )
+	| TermArithmeticDiv -> (/)
+	| _ -> raise Not_a_number
+
 (* evaluates arithmetic expression *)
 let rec apply_arith_operator t1 t2 f =
 	let n1 = arith_eval t1
@@ -67,10 +59,8 @@ let rec apply_arith_operator t1 t2 f =
 and arith_eval = function
 	| TermConstant (ConstantNumber n) -> n
 	| TermConstant _ -> raise Not_a_number
-	| TermArithmeticPlus (t1, t2)  -> apply_arith_operator t1 t2 (+)
-	| TermArithmeticMinus (t1, t2) -> apply_arith_operator t1 t2 (-)
-	| TermArithmeticMult (t1, t2)  -> apply_arith_operator t1 t2 ( * )
-	| TermArithmeticDiv (t1, t2)   -> apply_arith_operator t1 t2 (/)
+	| TermBinOp (op, t1, t2) ->
+		function_of_operation op |> apply_arith_operator t1 t2
 	| _ -> raise Not_a_number
 			
 let maybe_shuffle randomise clauses = 
@@ -150,34 +140,34 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 		let repterm = replace term rep (* apply replacement to the term *)
 		in
 			match repterm with
-				| TermTermUnify(term1,term2) -> sc (unify term1 term2 rep) fc
-				| TermTermNotUnify(term1,term2) -> 
+				| TermBinOp (TermTermUnify, term1, term2) -> sc (unify term1 term2 rep) fc
+				| TermBinOp (TermTermNotUnify, term1, term2) -> 
 					let uni = unify term1 term2 rep in
 						sc (not (fst uni), snd uni) fc
-				| TermArithmeticEquality (t1, t2) -> arith_equality t1 t2 true
-				| TermArithmeticInequality (t1, t2) -> arith_equality t1 t2 false
-				| TermArithmeticLess (t1, t2) -> arith_comparison t1 t2 (<)
-				| TermArithmeticGreater (t1, t2) -> arith_comparison t1 t2 (>)
-				| TermArithmeticLeq (t1, t2) -> arith_comparison t1 t2 (<=)
-				| TermArithmeticGeq (t1, t2) -> arith_comparison t1 t2 (>=)
+				| TermBinOp (TermArithmeticEquality, t1, t2) -> arith_equality t1 t2 true
+				| TermBinOp (TermArithmeticInequality, t1, t2) -> arith_equality t1 t2 false
+				| TermBinOp (TermArithmeticLess, t1, t2) -> arith_comparison t1 t2 (<)
+				| TermBinOp (TermArithmeticGreater, t1, t2) -> arith_comparison t1 t2 (>)
+				| TermBinOp (TermArithmeticLeq, t1, t2) -> arith_comparison t1 t2 (<=)
+				| TermBinOp (TermArithmeticGeq, t1, t2) -> arith_comparison t1 t2 (>=)
 				| TermNegation t ->
 					evaluate t database rep clauses
 						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
-				| TermTermEquality (t1, t2) -> sc (t1 = t2,rep) fc
-				| TermIs (t1, t2) -> 
+				| TermBinOp (TermTermEquality, t1, t2) -> sc (t1 = t2,rep) fc
+				| TermBinOp (TermIs, t1, t2) -> 
 					let n2 = TermConstant (ConstantNumber (arith_eval t2))
 					in
 						sc (unify t1 n2 []) fc
 				| TermFunctor(nam,args) -> 
 					functor_eval repterm database rep clauses sc fc cut_c
-				| TermAnd (t1, t2) -> 
+				| TermBinOp (TermAnd, t1, t2) -> 
 					evaluate t1 database rep clauses (* evaluate first term *)
 						(fun vt1 fc1 ->
 							if fst vt1 then
 								evaluate t2 database (snd vt1) clauses
 									(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c 
 							else sc (false,[]) fc1) fc cut_c
-				| TermOr (t1, t2) -> evaluate t1 database rep clauses
+				| TermBinOp (TermOr, t1, t2) -> evaluate t1 database rep clauses
 					(fun vt fc' -> sc vt fc')
 					(fun () -> 
 						evaluate t2 database rep clauses sc fc cut_c) cut_c

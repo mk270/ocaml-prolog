@@ -1,5 +1,23 @@
 open Types
 
+let string_of_binary_op = function
+	| TermIs -> " is "
+	| TermOr -> "; "
+	| TermAnd -> ", "
+	| TermArithmeticPlus -> " + "
+	| TermArithmeticMinus -> " - "
+	| TermArithmeticMult -> " * " 
+	| TermArithmeticDiv -> " / " 
+	| TermArithmeticEquality -> " =:= "
+	| TermArithmeticInequality -> " =\\= "
+	| TermArithmeticLess -> " < "
+	| TermArithmeticGreater -> " > "
+	| TermArithmeticLeq -> " <= "
+	| TermArithmeticGeq -> " >= "
+	| TermTermEquality -> " == " 
+	| TermTermUnify -> " = "
+	| TermTermNotUnify -> " /= "
+
 (* makes a string of term *)
 let string_of_term term =
 	let rec string_of_arguments = function
@@ -19,22 +37,8 @@ let string_of_term term =
 		| TermIfThen (t1, t2) -> "if " ^ (string_of_terms_with_sep " then " t1 t2)
 		| TermIfThenElse (t1, t2,t3) -> "if " ^ (string_of_terms_with_sep " then " t1 t2) ^ " else " ^ (string_of_term t3)
 		| TermNegation t -> "not " ^ (string_of_term t)
-		| TermIs (t1, t2) -> (string_of_terms_with_sep " is " t1 t2)
-		| TermOr (t1, t2) -> (string_of_terms_with_sep "; " t1 t2)
-		| TermAnd (t1, t2) -> (string_of_terms_with_sep ", " t1 t2)
-		| TermArithmeticPlus (t1, t2) -> (string_of_terms_with_sep " + " t1 t2)
-		| TermArithmeticMinus (t1, t2) -> (string_of_terms_with_sep " - " t1 t2)
-		| TermArithmeticMult (t1, t2) -> (string_of_terms_with_sep " * " t1 t2)
-		| TermArithmeticDiv (t1, t2) -> (string_of_terms_with_sep " / " t1 t2)
-		| TermArithmeticEquality (t1, t2) -> (string_of_terms_with_sep " =:= " t1 t2)
-		| TermArithmeticInequality (t1, t2) -> (string_of_terms_with_sep " =\\= " t1 t2)
-		| TermArithmeticLess (t1, t2) -> (string_of_terms_with_sep " < " t1 t2)
-		| TermArithmeticGreater (t1, t2) -> (string_of_terms_with_sep " > " t1 t2)
-		| TermArithmeticLeq (t1, t2) -> (string_of_terms_with_sep " <= " t1 t2)
-		| TermArithmeticGeq (t1, t2) -> (string_of_terms_with_sep " >= " t1 t2)
-		| TermTermEquality (t1, t2) -> (string_of_terms_with_sep " == " t1 t2)
-		| TermTermUnify (t1, t2) -> (string_of_terms_with_sep " = " t1 t2)
-		| TermTermNotUnify (t1, t2) -> (string_of_terms_with_sep " /= " t1 t2)
+		| TermBinOp (op, t1, t2) -> let sep = string_of_binary_op op in
+										string_of_terms_with_sep sep t1 t2
 		| TermList list ->
 			(match list with
 				| EmptyList -> "[]"
