@@ -3,6 +3,7 @@ SOURCES = \
 	shuffle.ml \
 	parser.mly \
 	lexer.mll \
+	operator.mli \
 	operator.ml \
 	repr.mli \
 	repr.ml \
