@@ -1,22 +1,5 @@
 open Types
-
-let string_of_binary_op = function
-	| TermIs -> " is "
-	| TermOr -> "; "
-	| TermAnd -> ", "
-	| TermArithmeticPlus -> " + "
-	| TermArithmeticMinus -> " - "
-	| TermArithmeticMult -> " * " 
-	| TermArithmeticDiv -> " / " 
-	| TermArithmeticEquality -> " =:= "
-	| TermArithmeticInequality -> " =\\= "
-	| TermArithmeticLess -> " < "
-	| TermArithmeticGreater -> " > "
-	| TermArithmeticLeq -> " <= "
-	| TermArithmeticGeq -> " >= "
-	| TermTermEquality -> " == " 
-	| TermTermUnify -> " = "
-	| TermTermNotUnify -> " /= "
+open Operator
 
 (* makes a string of term *)
 let string_of_term term =

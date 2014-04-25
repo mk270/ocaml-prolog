@@ -1,6 +1,7 @@
 
 open Types
 open Unification
+open Operator
 
 exception Not_a_number
 exception Cant_evaluate
@@ -42,13 +43,6 @@ let make_unique = function
 		in
 			ClauseImplication (replace term1 replacement,
 							   replace term2 replacement)
-
-let function_of_operation = function
-	| TermArithmeticPlus -> (+)
-	| TermArithmeticMinus -> (-)
-	| TermArithmeticMult -> ( * )
-	| TermArithmeticDiv -> (/)
-	| _ -> raise Not_a_number
 
 (* evaluates arithmetic expression *)
 let rec apply_arith_operator t1 t2 f =
