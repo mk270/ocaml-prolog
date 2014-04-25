@@ -11,3 +11,5 @@ setup.ml
 _build/
 _tags
 *.mlpack
+src/._bcdi
+src/._d
