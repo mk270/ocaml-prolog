@@ -133,33 +133,37 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 
 		let repterm = replace term rep (* apply replacement to the term *)
 		in
-			match repterm with
-				| TermBinOp (TermTermUnify, term1, term2) -> sc (unify term1 term2 rep) fc
-				| TermBinOp (TermTermNotUnify, term1, term2) -> 
+		let evaluate_binary_operation = function
+			| TermTermUnify, term1, term2 -> sc (unify term1 term2 rep) fc
+			| TermTermNotUnify, term1, term2 -> 
 					let uni = unify term1 term2 rep in
 						sc (not (fst uni), snd uni) fc
-				| TermBinOp (TermArithmeticEquality, t1, t2) -> arith_equality t1 t2 true
-				| TermBinOp (TermArithmeticInequality, t1, t2) -> arith_equality t1 t2 false
-				| TermBinOp (TermArithmeticLess, t1, t2) -> arith_comparison t1 t2 (<)
-				| TermBinOp (TermArithmeticGreater, t1, t2) -> arith_comparison t1 t2 (>)
-				| TermBinOp (TermArithmeticLeq, t1, t2) -> arith_comparison t1 t2 (<=)
-				| TermBinOp (TermArithmeticGeq, t1, t2) -> arith_comparison t1 t2 (>=)
-				| TermBinOp (TermTermEquality, t1, t2) -> sc (t1 = t2,rep) fc
-				| TermBinOp (TermIs, t1, t2) -> 
+			| TermArithmeticEquality, t1, t2 -> arith_equality t1 t2 true
+			| TermArithmeticInequality, t1, t2 -> arith_equality t1 t2 false
+			| TermArithmeticLess, t1, t2 -> arith_comparison t1 t2 (<)
+			| TermArithmeticGreater, t1, t2 -> arith_comparison t1 t2 (>)
+			| TermArithmeticLeq, t1, t2 -> arith_comparison t1 t2 (<=)
+			| TermArithmeticGeq, t1, t2 -> arith_comparison t1 t2 (>=)
+			| TermTermEquality, t1, t2 -> sc (t1 = t2,rep) fc
+			| TermIs, t1, t2 -> 
 					let n2 = TermConstant (ConstantNumber (arith_eval t2))
 					in
 						sc (unify t1 n2 []) fc
-				| TermBinOp (TermAnd, t1, t2) -> 
+			| TermAnd, t1, t2 -> 
 					evaluate t1 database rep clauses (* evaluate first term *)
 						(fun vt1 fc1 ->
 							if fst vt1 then
 								evaluate t2 database (snd vt1) clauses
 									(fun vt2 fc2 -> sc vt2 fc2) fc1 cut_c 
 							else sc (false,[]) fc1) fc cut_c
-				| TermBinOp (TermOr, t1, t2) -> evaluate t1 database rep clauses
+			| TermOr, t1, t2 -> evaluate t1 database rep clauses
 					(fun vt fc' -> sc vt fc')
 					(fun () -> 
 						evaluate t2 database rep clauses sc fc cut_c) cut_c
+			| _ -> raise Cant_evaluate
+		in
+			match repterm with
+				| TermBinOp (op, term1, term2) -> evaluate_binary_operation (op, term1, term2)
 				| TermNegation t ->
 					evaluate t database rep clauses
 						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
