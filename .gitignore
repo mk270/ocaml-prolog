@@ -10,3 +10,4 @@ setup.log
 setup.ml
 _build/
 _tags
+*.mlpack

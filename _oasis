@@ -9,6 +9,7 @@ Plugins:     META (0.4)
 Library prolog
   Path:       lib
   BuildTools: ocamlbuild, ocamlyacc
+  Pack:       true
   Modules:    Interpreter
   
 Executable opl
