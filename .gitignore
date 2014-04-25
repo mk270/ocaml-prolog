@@ -8,3 +8,13 @@ src/._bcdi
 src/._d
 *~
 bin/opl
+lib/META
+*.mldylib
+*.mllib
+myocamlbuild.ml
+*.byte
+setup.data
+setup.log
+setup.ml
+_build/
+_tags

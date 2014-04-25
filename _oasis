@@ -1,0 +1,18 @@
+OASISFormat: 0.4
+Name:        ocaml-prolog
+Version:     0.1
+Synopsis:    A Prolog interpreter in OCaml
+Authors:     Karol Stosiek, Szymon Fogiel, Martin Keegan
+License:     GPL-3
+Plugins:     META (0.4)
+
+Library prolog
+  Path:       lib
+  BuildTools: ocamlbuild, ocamlyacc
+  Modules:    Interpreter
+  
+Executable opl
+  Path:       src
+  BuildTools: ocamlbuild
+  MainIs:     opl.ml
+  BuildDepends: prolog 
