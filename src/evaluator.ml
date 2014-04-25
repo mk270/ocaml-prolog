@@ -144,14 +144,14 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 				| TermBinOp (TermArithmeticGreater, t1, t2) -> arith_comparison t1 t2 (>)
 				| TermBinOp (TermArithmeticLeq, t1, t2) -> arith_comparison t1 t2 (<=)
 				| TermBinOp (TermArithmeticGeq, t1, t2) -> arith_comparison t1 t2 (>=)
-				| TermNegation t ->
-					evaluate t database rep clauses
-						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
 				| TermBinOp (TermTermEquality, t1, t2) -> sc (t1 = t2,rep) fc
 				| TermBinOp (TermIs, t1, t2) -> 
 					let n2 = TermConstant (ConstantNumber (arith_eval t2))
 					in
 						sc (unify t1 n2 []) fc
+				| TermNegation t ->
+					evaluate t database rep clauses
+						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
 				| TermFunctor(nam,args) -> 
 					functor_eval repterm database rep clauses sc fc cut_c
 				| TermBinOp (TermAnd, t1, t2) -> 
