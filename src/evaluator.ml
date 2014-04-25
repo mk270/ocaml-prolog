@@ -149,11 +149,6 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					let n2 = TermConstant (ConstantNumber (arith_eval t2))
 					in
 						sc (unify t1 n2 []) fc
-				| TermNegation t ->
-					evaluate t database rep clauses
-						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
-				| TermFunctor(nam,args) -> 
-					functor_eval repterm database rep clauses sc fc cut_c
 				| TermBinOp (TermAnd, t1, t2) -> 
 					evaluate t1 database rep clauses (* evaluate first term *)
 						(fun vt1 fc1 ->
@@ -165,6 +160,11 @@ let evaluate term database rep clauses sc fc cut_c randomise =
 					(fun vt fc' -> sc vt fc')
 					(fun () -> 
 						evaluate t2 database rep clauses sc fc cut_c) cut_c
+				| TermNegation t ->
+					evaluate t database rep clauses
+						(fun vt fc' -> sc (not (fst vt), snd vt) fc') fc cut_c
+				| TermFunctor(nam,args) -> 
+					functor_eval repterm database rep clauses sc fc cut_c
 				| TermCut -> sc (true,rep) cut_c
 				| _ -> raise Cant_evaluate
 	in
