@@ -23,3 +23,8 @@ type database
 val interpret_string : database -> interp_behaviour -> string -> unit
 val clauses_from_string : string -> database
 (* val term_from_string : string -> term *)
+
+module Limit : sig
+	val get_limit : int option -> int
+	val set_limit : int -> int option
+end

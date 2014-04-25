@@ -10,7 +10,6 @@
 *)
 
 open Interpreter
-open Limit
 
 let load_file f =
 	let ic = open_in f in
@@ -44,7 +43,7 @@ let read_eval_print database behaviour =
 		let execute () =
 			Interpreter.interpret_string database behaviour query
 		in
-			get_limit behaviour.limit |> repeat execute
+			Limit.get_limit behaviour.limit |> repeat execute
     with
         | Failure ("lexing: empty token")    (* lexing failure *)
         | Parsing.Parse_error ->             (* parsing failure *)
@@ -82,7 +81,7 @@ let main () =
 			randomise = !randomise;
 			interactive = !interactive;
 			quiet = !quiet;
-			limit = set_limit !limit;
+			limit = Limit.set_limit !limit;
 		} in
 
 		let database = 
