@@ -22,13 +22,13 @@ Here's some output from a *trivial* attempt at generating plausible
 words from Tolkien's Quenya language, based on three minutes of
 research on Wikipedia's claims about its phonotactic constraints:
 
- nordordir
- hyescar
- tholduldel
- tormus
- ngworvus
- cultolter
- pallat
+* nordordir
+* hyescar
+* tholduldel
+* tormus
+* ngworvus
+* cultolter
+* pallat
 
 
 Licensing
