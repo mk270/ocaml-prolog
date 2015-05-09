@@ -4,7 +4,7 @@ post_process () {
 	sed 's/^:- // ; s/^_ = //' | tr -d '[|]' | sed 's/ *//g'|grep .
 }
  
-DEFAULT_FILE=tests/quenya_phonotaxis.pl
+DEFAULT_FILE=../tests/quenya_phonotaxis.pl
 DEFAULT=$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))/$DEFAULT_FILE
 SRC=${1-$DEFAULT}
 
