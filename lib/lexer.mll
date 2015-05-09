@@ -1,56 +1,56 @@
 (* header section *)
 {
-        open Parser;;
+  open Parser;;
 
         (* predefined operators list.  
          * semantics at: 
          * http://www.trinc-prolog.com/doc/pl_pred.htm
          * http://www.amzi.com/manuals/amzi7/pro/ref_math.htm
          *)   
-
-        let keywords = Hashtbl.create 32;;
-   
-        let _ = List.iter (fun (kwd, tok) -> Hashtbl.add keywords kwd tok)
-            [("not",    NOT);                   (* boolean negation *)
-             ("=:=",    ARITH_EQ);              (* arithmetical equality *)
-             ("=\\=",   ARITH_INEQ);            (* arithmetical inequality *)
-             ("->",     ARROW);                 (* if then [else] *)
-             ("\\=",    TERM_NOTUNIFY);         (* terms do not unify *)
-             ("=..",    TERM_DECOMP);           (* term composition/decomposition *)
-             ("==",     TERM_EQ);               (* term equality *)
-             ("@=<",    TERM_ORDER_LEQ);        (* term less or equal to (order of terms) *)
-             ("@>=",    TERM_ORDER_GEQ);        (* term greater or equal to (order of terms) *)
-             ("@=",     TERM_ORDER_EQ);         (* term equality (order of terms) *)
-             ("@\\=",   TERM_ORDER_INEQ);       (* term inequality (order of terms) *)
-             ("@<",     TERM_ORDER_LESS);       (* term less than (order of terms) *)
-             ("@>",     TERM_ORDER_GREATER);    (* term greater than (order of terms) *)
-             (">=",     ARITH_GEQ);             (* arithmetical greater or equal to *)
-             ("<=",     ARITH_LEQ);             (* arithmetical less or equal to *)
-             ("is",     IS);                    (* variable instantiation *)
-             ("::",     DOUBLECOLON);           (* module(database) specifier *)
-             ("\\/",    BITWISE_AND);           (* bitwise and *)
-             ("/\\",    BITWISE_OR);            (* bitwise or *)
-             ("\\",     BITWISE_NOT);           (* bitwise not *)
-             ("^",      VAR_INSTANTIATED);      (* is variable instantiated? *)
-             ("+",      PLUS);                  (* arithmetical plus *)
-             ("-",      MINUS);                 (* arithmetical minus *)
-             ("*",      MULT);                  (* arithmetical multiplication *)
-             ("/",      DIV);                   (* arithmetical division *)
-             ("(",      LPAREN);                (* left parenthesis *)
-             (")",      RPAREN);                (* right parenthesis *)
-             (":",      COLON);                 (* else *)
-             (",",      COMMA);                 (* logical and *)        
-             (";",      SEMICOLON);             (* logical or *)
-             ("=",      TERM_UNIFY);            (* unify terms *)
-             ("<",      ARITH_LESS);            (* arithmetical less than *)
-             (">",      ARITH_GREATER);         (* arithmetical greater than *)
-             ("!",      CUT);                   (* cut operator *)
-             (":-",     COLONHYPHEN);           (* logical implication *)
-             ("[",      LBRACKET);              (* left bracket for lists *)
-             ("]",      RBRACKET);              (* right bracket for lists *)
-             ("|",      PIPE)]                  (* head-tail delimiter for lists *)
-      ;;
-        
+  
+  let keywords = Hashtbl.create 32;;
+  
+  let _ = List.iter (fun (kwd, tok) -> Hashtbl.add keywords kwd tok)
+    [("not",    NOT);                   (* boolean negation *)
+     ("=:=",    ARITH_EQ);              (* arithmetical equality *)
+     ("=\\=",   ARITH_INEQ);            (* arithmetical inequality *)
+     ("->",     ARROW);                 (* if then [else] *)
+     ("\\=",    TERM_NOTUNIFY);         (* terms do not unify *)
+     ("=..",    TERM_DECOMP);           (* term composition/decomposition *)
+     ("==",     TERM_EQ);               (* term equality *)
+     ("@=<",    TERM_ORDER_LEQ);        (* term less or equal to (order of terms) *)
+     ("@>=",    TERM_ORDER_GEQ);        (* term greater or equal to (order of terms) *)
+     ("@=",     TERM_ORDER_EQ);         (* term equality (order of terms) *)
+     ("@\\=",   TERM_ORDER_INEQ);       (* term inequality (order of terms) *)
+     ("@<",     TERM_ORDER_LESS);       (* term less than (order of terms) *)
+     ("@>",     TERM_ORDER_GREATER);    (* term greater than (order of terms) *)
+     (">=",     ARITH_GEQ);             (* arithmetical greater or equal to *)
+     ("<=",     ARITH_LEQ);             (* arithmetical less or equal to *)
+     ("is",     IS);                    (* variable instantiation *)
+     ("::",     DOUBLECOLON);           (* module(database) specifier *)
+     ("\\/",    BITWISE_AND);           (* bitwise and *)
+     ("/\\",    BITWISE_OR);            (* bitwise or *)
+     ("\\",     BITWISE_NOT);           (* bitwise not *)
+     ("^",      VAR_INSTANTIATED);      (* is variable instantiated? *)
+     ("+",      PLUS);                  (* arithmetical plus *)
+     ("-",      MINUS);                 (* arithmetical minus *)
+     ("*",      MULT);                  (* arithmetical multiplication *)
+     ("/",      DIV);                   (* arithmetical division *)
+     ("(",      LPAREN);                (* left parenthesis *)
+     (")",      RPAREN);                (* right parenthesis *)
+     (":",      COLON);                 (* else *)
+     (",",      COMMA);                 (* logical and *)        
+     (";",      SEMICOLON);             (* logical or *)
+     ("=",      TERM_UNIFY);            (* unify terms *)
+     ("<",      ARITH_LESS);            (* arithmetical less than *)
+     (">",      ARITH_GREATER);         (* arithmetical greater than *)
+     ("!",      CUT);                   (* cut operator *)
+     (":-",     COLONHYPHEN);           (* logical implication *)
+     ("[",      LBRACKET);              (* left bracket for lists *)
+     ("]",      RBRACKET);              (* right bracket for lists *)
+     ("|",      PIPE)]                  (* head-tail delimiter for lists *)
+  ;;
+  
 }
 
 (* definitions section *)

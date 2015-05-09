@@ -11,10 +11,10 @@
 open Types
 
 type interp_behaviour = {
-	randomise : bool;
-	interactive : bool;
-	quiet : bool;
-	limit : int option;
+  randomise : bool;
+  interactive : bool;
+  quiet : bool;
+  limit : int option;
 }
 
 type database
@@ -25,6 +25,6 @@ val clauses_from_string : string -> database
 (* val term_from_string : string -> term *)
 
 module Limit : sig
-	val get_limit : int option -> int
-	val set_limit : int -> int option
+  val get_limit : int option -> int
+  val set_limit : int -> int option
 end
