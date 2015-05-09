@@ -4,7 +4,10 @@ post_process () {
 	sed 's/^:- // ; s/^_ = //' | tr -d '[|]' | sed 's/ *//g'|grep .
 }
  
-SRC=${1-$(dirname $0)/tests/quenya_phonotaxis.pl}
+DEFAULT_FILE=tests/quenya_phonotaxis.pl
+DEFAULT=$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))/$DEFAULT_FILE
+SRC=${1-$DEFAULT}
+
 START_TERM=${2-word}
 MAX=${3-100}
 DIR=$(dirname $([ -L $0 ] && readlink -f $0 || echo $0))
